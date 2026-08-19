@@ -1,0 +1,27 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 200 200" fill="none">
+  <rect width="200" height="200" fill="#0c0c0c"/>
+  <!-- Ouroboros da SubVerse -->
+  <path
+    d="M100 24c41.9 0 76 34.1 76 76s-34.1 76-76 76S24 141.9 24 100c0-29 16.5-54.5 41-67"
+    stroke="#f5f5f5"
+    stroke-width="12"
+    stroke-linecap="round"
+  />
+  <!-- Cabeça mordendo a cauda -->
+  <path
+    d="M100 24c-8 0-15 4.5-17.5 10.5 2.5 7 9.5 11.5 17.5 11.5 9 0 16-5.5 17.5-12.5-3.5-6-9.5-9.5-17.5-9.5Z"
+    stroke="#f5f5f5"
+    stroke-width="10"
+    fill="#f5f5f5"
+    stroke-linejoin="round"
+  />
+  <!-- Olho -->
+  <circle cx="94" cy="32" r="3" fill="#0c0c0c" />
+  <!-- Cauda entrando na boca -->
+  <path
+    d="M85 30c-5 2.5-9 4.5-14 4.5"
+    stroke="#f5f5f5"
+    stroke-width="8"
+    stroke-linecap="round"
+  />
+</svg>
