@@ -71,7 +71,7 @@ export function Nav() {
               className="tech link-underline text-muted-foreground transition-colors hover:text-foreground"
               activeProps={{ className: "text-foreground font-bold" }}
             >
-              PRODUTOS
+              PRODUCTS
             </Link>
             <Link
               to="/archive"
@@ -96,7 +96,7 @@ export function Nav() {
             aria-label={open ? "Fechar menu de navegação" : "Abrir menu de navegação"}
             aria-expanded={open}
           >
-            {open ? "FECHAR" : "MENU"}
+            {open ? "CLOSE" : "MENU"}
           </button>
         </nav>
 
@@ -129,7 +129,7 @@ export function Nav() {
                 className="group flex items-center justify-between font-display text-xl sm:text-2xl uppercase tracking-wider text-muted-foreground hover:text-foreground py-3 border-b border-border/40 transition-colors"
                 activeProps={{ className: "!text-foreground font-bold" }}
               >
-                <span>PRODUTOS</span>
+                <span>PRODUCTS</span>
                 <span className="tech text-[0.65rem] text-muted-foreground">03 →</span>
               </Link>
               <Link
