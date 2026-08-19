@@ -28,6 +28,7 @@ export function Nav() {
       };
     } else {
       document.body.style.overflow = "";
+      return undefined;
     }
   }, [open]);
 

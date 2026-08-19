@@ -9,12 +9,14 @@ type LogoProps = {
 /**
  * Logotipo oficial SubVerse: Monograma gótico 'SV' com a serpente entrelaçada (PNG Transparente HD).
  */
-export function Logo({
-  className,
-  alt = "SubVerse — Logotipo Oficial SV",
-}: LogoProps) {
+export function Logo({ className, alt = "SubVerse — Logotipo Oficial SV" }: LogoProps) {
   return (
-    <div className={cn("relative inline-flex items-center justify-center select-none shrink-0", className)}>
+    <div
+      className={cn(
+        "relative inline-flex items-center justify-center select-none shrink-0",
+        className,
+      )}
+    >
       <img
         src={logoImg}
         alt={alt}

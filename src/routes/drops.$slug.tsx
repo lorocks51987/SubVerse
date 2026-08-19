@@ -46,7 +46,9 @@ function Chapter({
       <div className="mx-auto grid max-w-[1600px] gap-8 md:grid-cols-12">
         <div className="md:col-span-4">
           <span className="tech text-muted-foreground text-xs">{index}</span>
-          <h2 className="font-display mt-4 text-4xl uppercase md:text-6xl text-foreground">{title}</h2>
+          <h2 className="font-display mt-4 text-4xl uppercase md:text-6xl text-foreground">
+            {title}
+          </h2>
         </div>
         <div className="md:col-span-7 md:col-start-6">{children}</div>
       </div>
@@ -137,9 +139,7 @@ function DropPage() {
                 className="spin-slow h-full w-full text-foreground/90"
               />
             </div>
-            <p className="leading-relaxed text-muted-foreground md:text-lg">
-              {drop.ouroboros}
-            </p>
+            <p className="leading-relaxed text-muted-foreground md:text-lg">{drop.ouroboros}</p>
           </div>
         </Chapter>
 
@@ -204,19 +204,22 @@ function DropPage() {
       <section className="border-t border-border px-5 py-20 md:px-8 md:py-28">
         <div className="mx-auto max-w-[1600px]">
           <span className="tech text-muted-foreground text-xs">VII // THE EDITION</span>
-          
+
           <div className="mt-8 grid gap-8 md:grid-cols-12 items-center">
             <div className="md:col-span-6 space-y-4">
               <p className="font-mono text-3xl md:text-5xl tracking-widest text-foreground font-bold">
-                {claimed < 10 ? `00${claimed}` : `0${claimed}`} / {made < 10 ? `00${made}` : `0${made}`}
+                {claimed < 10 ? `00${claimed}` : `0${claimed}`} /{" "}
+                {made < 10 ? `00${made}` : `0${made}`}
               </p>
-              
+
               <div className="font-mono text-base sm:text-xl md:text-2xl text-foreground tracking-normal sm:tracking-widest overflow-hidden select-none">
                 {barGraphic}
               </div>
 
               <p className="tech text-foreground font-bold tracking-wider">
-                {sold ? "00 ARTIFACTS REMAIN" : `${remaining < 10 ? `0${remaining}` : remaining} ARTIFACTS REMAIN`}
+                {sold
+                  ? "00 ARTIFACTS REMAIN"
+                  : `${remaining < 10 ? `0${remaining}` : remaining} ARTIFACTS REMAIN`}
               </p>
             </div>
 
@@ -242,15 +245,16 @@ function DropPage() {
           </div>
 
           <div className="md:col-span-7 md:col-start-6">
-            <p className="font-display text-5xl md:text-7xl text-foreground">{drop.artifact.price}</p>
+            <p className="font-display text-5xl md:text-7xl text-foreground">
+              {drop.artifact.price}
+            </p>
 
             {sold ? (
               <div className="mt-8 border border-border p-6 bg-card/20">
-                <p className="tech text-foreground font-bold">
-                  ARCHIVED — CAPÍTULO ESGOTADO
-                </p>
+                <p className="tech text-foreground font-bold">ARCHIVED — CAPÍTULO ESGOTADO</p>
                 <p className="mt-2 text-sm text-muted-foreground">
-                  Quem estava naquele capítulo, estava. Você pode consultar os registros na página de Arquivo.
+                  Quem estava naquele capítulo, estava. Você pode consultar os registros na página
+                  de Arquivo.
                 </p>
               </div>
             ) : (

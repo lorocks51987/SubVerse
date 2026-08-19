@@ -48,14 +48,15 @@ function Universe() {
               <div className="border border-border bg-card/30 p-8 min-h-[380px] flex flex-col justify-between hover:border-foreground transition-colors">
                 <div>
                   <span className="tech text-muted-foreground text-xs">PILAR // 01</span>
-                  <h2 className="font-display text-4xl uppercase mt-4 text-foreground">
-                    Subverso
-                  </h2>
+                  <h2 className="font-display text-4xl uppercase mt-4 text-foreground">Subverso</h2>
                   <p className="tech mt-2 text-foreground/80 text-[0.7rem] font-bold">
                     O LUGAR DOS QUE NÃO SE ENCAIXAM.
                   </p>
                   <p className="mt-6 text-muted-foreground text-sm leading-relaxed">
-                    A SubVerse não nasceu para agradar o consenso. Ela existe como um território para quem se recusa a ser empurrado para formas prontas. Não é sobre ser diferente por vaidade: é sobre encontrar pertencimento genuíno na recusa do padrão imposto.
+                    A SubVerse não nasceu para agradar o consenso. Ela existe como um território
+                    para quem se recusa a ser empurrado para formas prontas. Não é sobre ser
+                    diferente por vaidade: é sobre encontrar pertencimento genuíno na recusa do
+                    padrão imposto.
                   </p>
                 </div>
                 <div className="mt-8 pt-4 border-t border-border flex justify-between items-center text-xs">
@@ -77,7 +78,9 @@ function Universe() {
                     QUESTIONAR, ROMPER, TRANSFORMAR.
                   </p>
                   <p className="mt-6 text-muted-foreground text-sm leading-relaxed">
-                    A atitude central. Nada no mundo é imutável. Toda estrutura, regra e estética pré-moldada pode — e deve — ser questionada. A subversão é o ato de rachar o molde para que algo autêntico possa finalmente emergir.
+                    A atitude central. Nada no mundo é imutável. Toda estrutura, regra e estética
+                    pré-moldada pode — e deve — ser questionada. A subversão é o ato de rachar o
+                    molde para que algo autêntico possa finalmente emergir.
                   </p>
                 </div>
                 <div className="mt-8 pt-4 border-t border-border flex justify-between items-center text-xs">
@@ -102,7 +105,9 @@ function Universe() {
                     O CICLO ETERNO DE EVOLUÇÃO.
                   </p>
                   <p className="mt-6 text-muted-foreground text-sm leading-relaxed">
-                    A serpente devorando a própria cauda em ciclo infinito. Destruição, reconstrução e evolução permanente. Você nunca atinge um estado estático: você rompe, se transforma e recomeça o ciclo em um nível superior.
+                    A serpente devorando a própria cauda em ciclo infinito. Destruição, reconstrução
+                    e evolução permanente. Você nunca atinge um estado estático: você rompe, se
+                    transforma e recomeça o ciclo em um nível superior.
                   </p>
                 </div>
                 <div className="mt-8 pt-4 border-t border-border flex justify-between items-center text-xs">
@@ -136,10 +141,13 @@ function Universe() {
                 </span>
                 <h2 className="display-lg text-foreground">Você reconhece os seus.</h2>
                 <p className="leading-relaxed text-muted-foreground">
-                  O Ouroboros da SubVerse é desenhado como uma marcação de rua: anel imperfeito, traço de tinta pesada e a mandíbula que encontra a cauda no topo. Ele aparece na etiqueta, na serigrafia, no arquivo digital e na rua.
+                  O Ouroboros da SubVerse é desenhado como uma marcação de rua: anel imperfeito,
+                  traço de tinta pesada e a mandíbula que encontra a cauda no topo. Ele aparece na
+                  etiqueta, na serigrafia, no arquivo digital e na rua.
                 </p>
                 <p className="leading-relaxed text-muted-foreground">
-                  Quando alguém encontra o símbolo sem nenhum logotipo por perto, a mensagem já foi transmitida.
+                  Quando alguém encontra o símbolo sem nenhum logotipo por perto, a mensagem já foi
+                  transmitida.
                 </p>
               </div>
 

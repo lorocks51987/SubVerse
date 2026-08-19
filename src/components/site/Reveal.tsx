@@ -74,8 +74,8 @@ export function TextReveal({
     align === "right"
       ? "justify-end text-right"
       : align === "center"
-      ? "justify-center text-center"
-      : "justify-start text-left";
+        ? "justify-center text-center"
+        : "justify-start text-left";
 
   return (
     <motion.span
@@ -118,5 +118,3 @@ export function TextReveal({
     </motion.span>
   );
 }
-
-

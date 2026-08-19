@@ -44,21 +44,24 @@ function Manifesto() {
       <section className="px-5 py-24 md:px-8 md:py-36">
         <div className="mx-auto max-w-[1600px] space-y-24 md:space-y-36">
           <Reveal y={18}>
-            <p className="font-display text-4xl sm:text-6xl md:text-8xl lg:text-[7.5rem] leading-[0.9] text-foreground max-w-[15ch]">
-              Você foi ensinado a caber.
+            <p className="font-display text-4xl sm:text-6xl md:text-8xl lg:text-[7.5rem] leading-[0.9] text-foreground max-w-4xl">
+              <span className="block">Você foi ensinado</span>
+              <span className="block">a caber.</span>
             </p>
           </Reveal>
 
           <Reveal y={18} delay={0.08}>
-            <p className="font-display text-3xl sm:text-5xl md:text-7xl lg:text-[6rem] leading-[0.95] text-muted-foreground max-w-[18ch]">
-              Ensinado a repetir a forma que já existia.
+            <p className="font-display text-3xl sm:text-5xl md:text-7xl lg:text-[6rem] leading-[0.95] text-muted-foreground max-w-4xl">
+              <span className="block">Ensinado a repetir</span>
+              <span className="block">a forma que já existia.</span>
             </p>
           </Reveal>
 
           <Reveal y={18} delay={0.12}>
             <div className="flex justify-end">
-              <p className="font-display text-4xl sm:text-6xl md:text-8xl lg:text-[7.5rem] leading-[0.9] text-right text-foreground max-w-[16ch]">
-                Mas nem todo mundo foi feito para caber.
+              <p className="font-display text-4xl sm:text-6xl md:text-8xl lg:text-[7.5rem] leading-[0.9] text-right text-foreground max-w-4xl">
+                <span className="block">Mas nem todo mundo</span>
+                <span className="block">foi feito para caber.</span>
               </p>
             </div>
           </Reveal>
@@ -93,19 +96,19 @@ function Manifesto() {
                   style={{ transform: `rotate(${i % 2 ? 0.3 : -0.3}deg)` }}
                 >
                   <div>
-                    <span className="tech text-muted-foreground font-mono text-xs">{num} // ETAPA</span>
+                    <span className="tech text-muted-foreground font-mono text-xs">
+                      {num} // ETAPA
+                    </span>
                     <h2 className="font-display mt-3 text-3xl uppercase md:text-4xl text-foreground">
                       {title}
                     </h2>
-                    <p className="mt-4 text-sm leading-relaxed text-muted-foreground">
-                      {body}
-                    </p>
+                    <p className="mt-4 text-sm leading-relaxed text-muted-foreground">{body}</p>
                   </div>
                   <div className="mt-8 pt-4 border-t border-border flex items-center justify-between">
-                    <span className="tech text-[0.6rem] text-muted-foreground">CICLO PERMANENTE</span>
-                    {title === "EVOLUIR" && (
-                      <OuroborosInfinity className="h-4 w-10 opacity-70" />
-                    )}
+                    <span className="tech text-[0.6rem] text-muted-foreground">
+                      CICLO PERMANENTE
+                    </span>
+                    {title === "EVOLUIR" && <OuroborosInfinity className="h-4 w-10 opacity-70" />}
                   </div>
                 </div>
               </Reveal>
@@ -128,8 +131,8 @@ function Manifesto() {
                 </p>
 
                 <p className="tech mt-8 max-w-[48ch] text-muted-foreground text-[0.7rem] leading-relaxed">
-                  CADA PEÇA É UMA MANIFESTAÇÃO FÍSICA DE UMA IDEIA. CADA DROP É UM CAPÍTULO.
-                  QUANDO O CICLO SE FECHA, O QUE RESTA É TRANSFORMAÇÃO.
+                  CADA PEÇA É UMA MANIFESTAÇÃO FÍSICA DE UMA IDEIA. CADA DROP É UM CAPÍTULO. QUANDO
+                  O CICLO SE FECHA, O QUE RESTA É TRANSFORMAÇÃO.
                 </p>
               </div>
             </div>
@@ -140,9 +143,12 @@ function Manifesto() {
             <div className="grid gap-12 md:grid-cols-12 items-center">
               <div className="md:col-span-6 space-y-4">
                 <span className="tech text-muted-foreground text-xs">PRÓXIMO PASSO</span>
-                <h3 className="display-lg text-foreground">Você quer saber o que é esse universo?</h3>
+                <h3 className="display-lg text-foreground">
+                  Você quer saber o que é esse universo?
+                </h3>
                 <p className="text-muted-foreground leading-relaxed text-sm md:text-base">
-                  O manifesto é a espinha dorsal de tudo o que produzimos. Conheça as manifestações físicas dessa filosofia.
+                  O manifesto é a espinha dorsal de tudo o que produzimos. Conheça as manifestações
+                  físicas dessa filosofia.
                 </p>
               </div>
 
@@ -158,7 +164,10 @@ function Manifesto() {
                       ENTRAR NO CAPÍTULO I →
                     </span>
                   </div>
-                  <Ouroboros variant="forming" className="h-6 w-6 transition-transform duration-700 group-hover:rotate-180" />
+                  <Ouroboros
+                    variant="forming"
+                    className="h-6 w-6 transition-transform duration-700 group-hover:rotate-180"
+                  />
                 </Link>
 
                 <Link
@@ -166,7 +175,9 @@ function Manifesto() {
                   className="flex items-center justify-between border border-border p-5 text-foreground transition-colors hover:border-foreground"
                 >
                   <div>
-                    <span className="tech block text-[0.65rem] text-muted-foreground">FILOSOFIA DA MARCA</span>
+                    <span className="tech block text-[0.65rem] text-muted-foreground">
+                      FILOSOFIA DA MARCA
+                    </span>
                     <span className="tech text-sm tracking-widest uppercase font-bold">
                       EXPLORAR O UNIVERSO →
                     </span>

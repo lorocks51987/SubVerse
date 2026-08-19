@@ -32,7 +32,8 @@ function Archive() {
             <span className="tech text-muted-foreground text-xs">REGISTRO HISTÓRICO</span>
             <h1 className="display-xl mt-4 text-foreground">Archive</h1>
             <p className="mt-4 max-w-[48ch] leading-relaxed text-muted-foreground">
-              O arquivo não é catálogo. É registro. Quem estava naquele capítulo, estava. Quando o número fecha, não há reposição.
+              O arquivo não é catálogo. É registro. Quem estava naquele capítulo, estava. Quando o
+              número fecha, não há reposição.
             </p>
           </div>
 
@@ -70,9 +71,7 @@ function Archive() {
                       </span>
                     )}
                   </div>
-                  <p className="tech text-muted-foreground text-[0.65rem] mt-2">
-                    {drop.period}
-                  </p>
+                  <p className="tech text-muted-foreground text-[0.65rem] mt-2">{drop.period}</p>
                 </div>
 
                 <div className="overflow-hidden md:col-span-3 border border-border">
@@ -114,7 +113,9 @@ function Archive() {
                 <Ouroboros variant="deteriorated" className="spin-slower text-foreground/40" />
               </div>
               <div>
-                <p className="tech text-foreground text-xs sm:text-sm">PRÓXIMO CAPÍTULO EM FORMAÇÃO</p>
+                <p className="tech text-foreground text-xs sm:text-sm">
+                  PRÓXIMO CAPÍTULO EM FORMAÇÃO
+                </p>
                 <p className="tech text-muted-foreground text-[0.65rem] mt-1">
                   O CICLO NUNCA PARA DE GIRAR.
                 </p>

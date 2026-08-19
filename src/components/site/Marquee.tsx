@@ -11,7 +11,9 @@ export function Marquee({
 }) {
   const row = Array.from({ length: items });
   return (
-    <div className={`relative overflow-hidden border-y border-border py-3.5 bg-background select-none ${className ?? ""}`}>
+    <div
+      className={`relative overflow-hidden border-y border-border py-3.5 bg-background select-none ${className ?? ""}`}
+    >
       <div className="flex w-max animate-[marquee_34s_linear_infinite] items-center gap-10 hover:[animation-play-state:paused]">
         {row.concat(row).map((_, i) => (
           <span key={i} className="flex items-center gap-10">

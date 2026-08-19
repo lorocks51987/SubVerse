@@ -22,7 +22,9 @@ export function Ouroboros({
 }: OuroborosProps) {
   if (variant === "deteriorated") {
     return (
-      <div className={cn("relative inline-flex items-center justify-center select-none", className)}>
+      <div
+        className={cn("relative inline-flex items-center justify-center select-none", className)}
+      >
         <img
           src={ouroborosImg}
           alt={alt}
@@ -36,7 +38,9 @@ export function Ouroboros({
 
   if (variant === "forming") {
     return (
-      <div className={cn("relative inline-flex items-center justify-center select-none", className)}>
+      <div
+        className={cn("relative inline-flex items-center justify-center select-none", className)}
+      >
         <img
           src={ouroborosImg}
           alt={alt}
@@ -58,7 +62,7 @@ export function Ouroboros({
         height={500}
         className={cn(
           "h-full w-full object-contain contrast-125 brightness-110 drop-shadow-[0_0_12px_rgba(255,255,255,0.05)]",
-          variant === "fragmented" && "opacity-85"
+          variant === "fragmented" && "opacity-85",
         )}
       />
     </div>

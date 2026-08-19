@@ -141,9 +141,7 @@ function ProductsPage() {
                   </div>
 
                   <div className="mt-6 flex items-center justify-between pt-4 border-t border-border">
-                    <span className="tech text-foreground font-bold text-xs">
-                      VER PEÇA →
-                    </span>
+                    <span className="tech text-foreground font-bold text-xs">VER PEÇA →</span>
                     <Ouroboros className="h-4 w-4 text-muted-foreground group-hover:text-foreground transition-transform duration-500 group-hover:rotate-90" />
                   </div>
                 </div>
@@ -195,7 +193,7 @@ function ProductsPage() {
                       />
                     </AnimatePresence>
                   </div>
-                  
+
                   {/* Miniaturas */}
                   <div className="grid grid-cols-3 gap-2">
                     {selectedProduct.images.map((img, i) => (
@@ -208,7 +206,11 @@ function ProductsPage() {
                             : "border-border opacity-50 hover:opacity-100"
                         }`}
                       >
-                        <img src={img.src} alt={img.label} className="h-full w-full object-cover grayscale" />
+                        <img
+                          src={img.src}
+                          alt={img.label}
+                          className="h-full w-full object-cover grayscale"
+                        />
                       </button>
                     ))}
                   </div>
@@ -253,8 +255,12 @@ function ProductsPage() {
                     {/* Seleção de Tamanho */}
                     <div className="mt-6">
                       <div className="flex items-center justify-between">
-                        <span className="tech text-muted-foreground text-xs">SELECIONE A GRADE:</span>
-                        <span className="tech text-muted-foreground text-[0.65rem]">MODELAGEM BOXY</span>
+                        <span className="tech text-muted-foreground text-xs">
+                          SELECIONE A GRADE:
+                        </span>
+                        <span className="tech text-muted-foreground text-[0.65rem]">
+                          MODELAGEM BOXY
+                        </span>
                       </div>
                       <div className="mt-3 flex flex-wrap gap-2">
                         {selectedProduct.sizes.map((s) => (
@@ -282,7 +288,9 @@ function ProductsPage() {
                       onClick={handleAcquire}
                       className="tech w-full border border-foreground bg-foreground py-4 text-center text-background font-bold transition-all hover:bg-background hover:text-foreground disabled:opacity-30 disabled:cursor-not-allowed disabled:hover:bg-foreground disabled:hover:text-background min-h-[48px] cursor-pointer"
                     >
-                      {selectedSize ? `ADQUIRIR PEÇA — ${selectedProduct.price}` : "SELECIONE UM TAMANHO"}
+                      {selectedSize
+                        ? `ADQUIRIR PEÇA — ${selectedProduct.price}`
+                        : "SELECIONE UM TAMANHO"}
                     </motion.button>
 
                     <AnimatePresence>
@@ -309,7 +317,10 @@ function ProductsPage() {
         )}
       </AnimatePresence>
 
-      <Marquee text="SUBVERSE // ARQUIVO COMERCIAL // OVERSIZED 240G // SUEDINE // SÃO PAULO" items={4} />
+      <Marquee
+        text="SUBVERSE // ARQUIVO COMERCIAL // OVERSIZED 240G // SUEDINE // SÃO PAULO"
+        items={4}
+      />
     </div>
   );
 }
