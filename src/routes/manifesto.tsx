@@ -43,19 +43,19 @@ function Manifesto() {
       {/* TEXTO PRINCIPAL */}
       <section className="px-5 py-24 md:px-8 md:py-36">
         <div className="mx-auto max-w-[1600px] space-y-24 md:space-y-36">
-          <Reveal>
+          <Reveal y={18}>
             <p className="font-display text-4xl sm:text-6xl md:text-8xl lg:text-[7.5rem] leading-[0.9] text-foreground max-w-[15ch]">
               Você foi ensinado a caber.
             </p>
           </Reveal>
 
-          <Reveal>
+          <Reveal y={18} delay={0.08}>
             <p className="font-display text-3xl sm:text-5xl md:text-7xl lg:text-[6rem] leading-[0.95] text-muted-foreground max-w-[18ch]">
               Ensinado a repetir a forma que já existia.
             </p>
           </Reveal>
 
-          <Reveal>
+          <Reveal y={18} delay={0.12}>
             <div className="flex justify-end">
               <p className="font-display text-4xl sm:text-6xl md:text-8xl lg:text-[7.5rem] leading-[0.9] text-right text-foreground max-w-[16ch]">
                 Mas nem todo mundo foi feito para caber.
@@ -79,7 +79,7 @@ function Manifesto() {
               [
                 "03",
                 "TRANSFORMAR",
-                "O que sobra da ruptura é matéria-prima. Não existe versão final acabada. Existe transformação contínua.",
+                "O que sobra da ruptura vira matéria-prima. Não existe versão final acabada. Existe transformação contínua.",
               ],
               [
                 "04",
@@ -87,9 +87,9 @@ function Manifesto() {
                 "E então recomeça. O ciclo não tem última volta. Quem para no molde aceita ser definido pelos outros.",
               ],
             ].map(([num, title, body], i) => (
-              <Reveal key={title} delay={i * 0.08}>
+              <Reveal key={title} delay={i * 0.08} y={16}>
                 <div
-                  className="border-t border-border pt-6 min-h-[220px] flex flex-col justify-between bg-card/20 p-6"
+                  className="border-t border-border pt-6 min-h-[220px] flex flex-col justify-between bg-card/20 p-6 hover:border-foreground transition-colors duration-300"
                   style={{ transform: `rotate(${i % 2 ? 0.3 : -0.3}deg)` }}
                 >
                   <div>
@@ -113,8 +113,8 @@ function Manifesto() {
           </div>
 
           {/* OUROBOROS CENTRAL */}
-          <Reveal>
-            <div className="relative border border-border p-8 md:p-16 text-center bg-card/20">
+          <Reveal y={20}>
+            <div className="relative border border-border p-8 md:p-16 text-center bg-card/20 hover:border-foreground/60 transition-colors">
               <div className="mx-auto max-w-2xl flex flex-col items-center">
                 <div className="relative my-6 h-36 w-36 md:h-48 md:w-48">
                   <Ouroboros variant="intact" className="h-full w-full" />
