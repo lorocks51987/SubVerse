@@ -1,5 +1,4 @@
 import { createFileRoute, Link } from "@tanstack/react-router";
-import { motion, useReducedMotion } from "motion/react";
 import { Ouroboros } from "@/components/Ouroboros";
 import { OuroborosInfinity } from "@/components/OuroborosInfinity";
 import {
@@ -10,7 +9,6 @@ import {
   LineReveal,
   FadeIn,
 } from "@/components/site/Reveal";
-import { Marquee } from "@/components/site/Marquee";
 
 export const Route = createFileRoute("/manifesto")({
   head: () => ({
@@ -32,21 +30,19 @@ export const Route = createFileRoute("/manifesto")({
 });
 
 function Manifesto() {
-  const shouldReduceMotion = useReducedMotion();
-
   return (
     <div className="concrete-surface pt-28">
       {/* HEADER */}
       <section className="px-5 md:px-8">
-        <div className="mx-auto max-w-[1600px] flex flex-wrap items-end justify-between gap-6 border-b border-border pb-10">
+        <div className="mx-auto max-w-[1600px] flex flex-wrap items-end justify-between gap-6 border-b border-border/40 pb-10">
           <ClipReveal>
-            <span className="tech text-muted-foreground text-xs">DOCUMENTO // 001</span>
-            <h1 className="display-xl text-foreground mt-4">Manifesto</h1>
+            <span className="tech text-muted-foreground text-xs font-mono">DOCUMENTO 001</span>
+            <h1 className="display-xl text-foreground mt-3">Manifesto</h1>
           </ClipReveal>
           <Reveal y={10} delay={0.1}>
-            <div className="text-right">
-              <p className="tech text-muted-foreground">SUBVERSE // POSTULADO</p>
-              <p className="tech text-foreground">SÃO PAULO // RUA</p>
+            <div className="text-right font-mono text-xs">
+              <p className="tech text-muted-foreground">SUBVERSE — POSTULADO</p>
+              <p className="tech text-foreground font-bold mt-0.5">SÃO PAULO — RUA</p>
             </div>
           </Reveal>
         </div>
@@ -56,7 +52,7 @@ function Manifesto() {
       <section className="px-5 py-24 md:px-8 md:py-36">
         <div className="mx-auto max-w-[1600px] space-y-24 md:space-y-36">
 
-          {/* IMPOSIÇÃO — máxima força, frase principal */}
+          {/* IMPOSIÇÃO */}
           <div className="max-w-4xl">
             <p className="font-display text-4xl sm:text-6xl md:text-8xl lg:text-[7.5rem] leading-[0.9] text-foreground">
               <MaskReveal delay={0}>
@@ -68,7 +64,7 @@ function Manifesto() {
             </p>
           </div>
 
-          {/* ESTRUTURA — aparece mais apagada, representa a forma imposta */}
+          {/* ESTRUTURA */}
           <Reveal y={18} delay={0.06}>
             <p className="font-display text-3xl sm:text-5xl md:text-7xl lg:text-[6rem] leading-[0.95] text-muted-foreground max-w-4xl">
               <span className="block">Ensinado a repetir</span>
@@ -76,7 +72,7 @@ function Manifesto() {
             </p>
           </Reveal>
 
-          {/* RUPTURA — lateral, maior presença, representa a saída */}
+          {/* RUPTURA */}
           <div className="flex justify-end">
             <div className="max-w-4xl text-right">
               <p className="font-display text-4xl sm:text-6xl md:text-8xl lg:text-[7.5rem] leading-[0.9] text-right text-foreground">
@@ -90,7 +86,7 @@ function Manifesto() {
             </div>
           </div>
 
-          {/* OS QUATRO PILARES — stagger sequencial com LineReveal */}
+          {/* OS QUATRO PILARES */}
           <div>
             <LineReveal delay={0} className="mb-0" />
             <div className="grid gap-6 md:grid-cols-2 lg:grid-cols-4">
@@ -117,21 +113,18 @@ function Manifesto() {
                 ],
               ].map(([num, title, body], i) => (
                 <Reveal key={title} delay={i * 0.1} y={14}>
-                  <div
-                    className="border-t border-border pt-6 min-h-[220px] flex flex-col justify-between bg-card/20 p-6 hover:border-foreground/60 transition-colors duration-300"
-                    style={{ transform: `rotate(${i % 2 ? 0.3 : -0.3}deg)` }}
-                  >
+                  <div className="pt-6 min-h-[220px] flex flex-col justify-between p-6">
                     <div>
                       <span className="tech text-muted-foreground font-mono text-xs">
-                        {num} // ETAPA
+                        {num} — ETAPA
                       </span>
                       <h2 className="font-display mt-3 text-3xl uppercase md:text-4xl text-foreground">
                         {title}
                       </h2>
                       <p className="mt-4 text-sm leading-relaxed text-muted-foreground">{body}</p>
                     </div>
-                    <div className="mt-8 pt-4 border-t border-border flex items-center justify-between">
-                      <span className="tech text-[0.6rem] text-muted-foreground">
+                    <div className="mt-8 pt-4 border-t border-border/40 flex items-center justify-between">
+                      <span className="tech text-[0.6rem] text-muted-foreground font-mono">
                         CICLO PERMANENTE
                       </span>
                       {title === "EVOLUIR" && <OuroborosInfinity className="h-4 w-10 opacity-70" />}
@@ -143,10 +136,10 @@ function Manifesto() {
           </div>
 
           {/* AXIOMA / BLOCO CENTRAL */}
-          <div className="relative border border-border p-8 md:p-16 text-center bg-card/20 hover:border-foreground/50 transition-colors">
+          <div className="py-16 md:py-24 text-center border-t border-b border-border/40">
             <div className="mx-auto max-w-2xl flex flex-col items-center">
-              <FadeIn delay={0} className="relative my-6 h-36 w-36 md:h-48 md:w-48">
-                <Ouroboros variant="intact" className="h-full w-full" />
+              <FadeIn delay={0} className="relative my-6 h-32 w-32 md:h-44 md:w-44">
+                <Ouroboros variant="intact" className="h-full w-full text-foreground/85" />
               </FadeIn>
 
               <p className="display-lg mt-4 max-w-[20ch] text-foreground">
@@ -161,7 +154,7 @@ function Manifesto() {
               </p>
 
               <Reveal y={8} delay={0.5}>
-                <p className="tech mt-8 max-w-[48ch] text-muted-foreground text-[0.7rem] leading-relaxed">
+                <p className="tech mt-8 max-w-[48ch] text-muted-foreground text-[0.7rem] leading-relaxed font-mono">
                   CADA PEÇA É UMA MANIFESTAÇÃO FÍSICA DE UMA IDEIA. CADA DROP É UM CAPÍTULO. QUANDO
                   O CICLO SE FECHA, O QUE RESTA É TRANSFORMAÇÃO.
                 </p>
@@ -169,13 +162,12 @@ function Manifesto() {
             </div>
           </div>
 
-
-          {/* CONVITES NARRATIVOS — hierarquia clara: CTA principal vs secundário */}
-          <div className="pt-12 border-t border-border">
+          {/* CONVITES NARRATIVOS */}
+          <div className="pt-12">
             <div className="grid gap-12 md:grid-cols-12 items-center">
               <div className="md:col-span-6 space-y-4">
                 <ClipReveal>
-                  <span className="tech text-muted-foreground text-xs">PRÓXIMO PASSO</span>
+                  <span className="tech text-muted-foreground text-xs font-mono">PRÓXIMO PASSO</span>
                   <h3 className="display-lg text-foreground mt-2">
                     Você quer saber o que é esse universo?
                   </h3>
@@ -187,15 +179,14 @@ function Manifesto() {
               </div>
 
               <div className="md:col-span-5 md:col-start-8 flex flex-col gap-4">
-                {/* CTA principal — maior presença */}
                 <Reveal y={10} delay={0.1}>
                   <Link
                     to="/drops/$slug"
                     params={{ slug: "001" }}
-                    className="group flex items-center justify-between border border-foreground bg-foreground p-6 text-background transition-all hover:bg-background hover:text-foreground font-bold hover:-translate-y-0.5 duration-300"
+                    className="group flex items-center justify-between bg-foreground p-6 text-background transition-all hover:bg-background hover:text-foreground font-bold border border-foreground duration-300"
                   >
                     <div>
-                      <span className="tech block text-[0.65rem] opacity-75">PRIMEIRO CAPÍTULO</span>
+                      <span className="tech block text-[0.65rem] opacity-75 font-mono">PRIMEIRO CAPÍTULO</span>
                       <span className="font-display text-2xl uppercase tracking-wider">
                         ENTRAR NO CAPÍTULO I →
                       </span>
@@ -207,21 +198,20 @@ function Manifesto() {
                   </Link>
                 </Reveal>
 
-                {/* CTA secundário — discreto */}
                 <Reveal y={8} delay={0.2}>
                   <Link
                     to="/universe"
-                    className="flex items-center justify-between border border-border p-5 text-foreground transition-colors hover:border-foreground"
+                    className="flex items-center justify-between border border-border/60 p-5 text-foreground transition-colors hover:border-foreground"
                   >
                     <div>
-                      <span className="tech block text-[0.65rem] text-muted-foreground">
+                      <span className="tech block text-[0.65rem] text-muted-foreground font-mono">
                         FILOSOFIA DA MARCA
                       </span>
-                      <span className="tech text-sm tracking-widest uppercase font-bold">
+                      <span className="tech text-sm tracking-widest uppercase font-bold font-mono">
                         EXPLORAR O UNIVERSO →
                       </span>
                     </div>
-                    <span className="tech text-muted-foreground">002</span>
+                    <span className="tech text-muted-foreground font-mono text-xs">002</span>
                   </Link>
                 </Reveal>
               </div>
@@ -229,8 +219,6 @@ function Manifesto() {
           </div>
         </div>
       </section>
-
-      <Marquee text="QUESTIONAR — ROMPER — TRANSFORMAR — EVOLUIR — RECOMEÇAR" />
     </div>
   );
 }

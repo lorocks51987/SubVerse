@@ -2,6 +2,27 @@ import heroEditorial from "@/assets/hero-editorial.jpg";
 import artifactFront from "@/assets/artifact-front.jpg";
 import artifactDetail from "@/assets/artifact-detail.jpg";
 
+export type DropPiece = {
+  id: string;
+  code: string;
+  name: string;
+  subtitle: string;
+  isHero?: boolean;
+  isConcept?: boolean;
+  fabric: string;
+  fit: string;
+  specs: string;
+  price?: number | string; // Suporta number (ex: 249.90) ou string. Quando indefinido, renderiza "PREÇO A DEFINIR"
+  edition: string;
+  editionUnits?: string;
+  editionSize?: number;
+  remaining?: number;
+  sizes: string[];
+  image: string;
+  detailsImage?: string;
+  description: string;
+};
+
 export type Drop = {
   slug: string;
   number: string;
@@ -13,7 +34,9 @@ export type Drop = {
   symbol: string;
   ouroboros: string;
   process: string[];
+  editionConcept?: string;
   edition: { made: number; remaining: number };
+  pieces?: DropPiece[];
   artifact: {
     code: string;
     name: string;
@@ -47,7 +70,62 @@ export const drops: Drop[] = [
       "Malha pesada 240g lavada para perder o brilho de fábrica",
       "Serigrafia com rachadura proposital na cura",
     ],
+    editionConcept: "EDIÇÃO LIMITADA // PRODUÇÃO RESTRITA",
     edition: { made: 50, remaining: 12 },
+    pieces: [
+      {
+        id: "moldados-001",
+        code: "MOLDADOS // 001",
+        name: "MOLDADOS TEE",
+        subtitle: "OVERSIZED HEAVYWEIGHT TEE",
+        isHero: true,
+        isConcept: true,
+        fabric: "100% ALGODÃO 240G",
+        fit: "OVERSIZED BOXY",
+        specs: "100% ALGODÃO 240G · BOXY OVERSIZED",
+        edition: "EDIÇÃO LIMITADA",
+        editionUnits: "50 UNIDADES",
+        sizes: ["P", "M", "G", "GG"],
+        image: heroEditorial,
+        detailsImage: artifactFront,
+        description:
+          "Modelagem boxy estruturada com estampa em serigrafia de cura aberta sob o símbolo do Ouroboros em formação.",
+      },
+      {
+        id: "moldados-002",
+        code: "MOLDADOS // 002",
+        name: "MOLDADOS HOODIE",
+        subtitle: "HEAVY FLEECE HOODIE",
+        isHero: false,
+        isConcept: true,
+        fabric: "FRENCH TERRY 420G",
+        fit: "BOXY STRUCTURED",
+        specs: "FRENCH TERRY 420G · BOXY STRUCTURED",
+        edition: "EDIÇÃO LIMITADA",
+        editionUnits: "50 UNIDADES",
+        sizes: ["P", "M", "G", "GG"],
+        image: artifactDetail,
+        description:
+          "Gramatura extrema com acabamento canelado denso e bordado tonal sutil do Ouroboros.",
+      },
+      {
+        id: "moldados-003",
+        code: "MOLDADOS // 003",
+        name: "MOLDADOS PANTS",
+        subtitle: "RAW CARPENTER PANTS",
+        isHero: false,
+        isConcept: true,
+        fabric: "SARJA PESADA 320G",
+        fit: "WIDE LEG RELAXED",
+        specs: "SARJA PESADA 320G · WIDE LEG",
+        edition: "EDIÇÃO LIMITADA",
+        editionUnits: "50 UNIDADES",
+        sizes: ["38", "40", "42", "44"],
+        image: artifactFront,
+        description:
+          "Construção utilitária com costuras reforçadas em linha contrastante e corte amplo.",
+      },
+    ],
     artifact: {
       code: "SUBVERSE / DROP 001 / ARTIFACT 007",
       name: "MOLDADOS TEE",
@@ -95,3 +173,4 @@ export const activeDrop = drops[0]!;
 export function getDrop(slug: string) {
   return drops.find((d) => d.slug === slug);
 }
+

@@ -50,7 +50,7 @@ export function Footer() {
                 <Logo className="h-12 w-12" />
                 <div>
                   <p className="tech text-muted-foreground text-xs">
-                    SUBVERSE // SÃO PAULO // BRASIL
+                    SUBVERSE — SÃO PAULO — BRASIL
                   </p>
                   <p className="tech text-foreground font-bold text-xs mt-0.5">IDENTIDADE OFICIAL</p>
                 </div>

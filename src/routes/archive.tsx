@@ -38,9 +38,9 @@ function Archive() {
           </ClipReveal>
 
           <Reveal y={8} delay={0.1}>
-            <div className="text-right">
+            <div className="text-right font-mono text-xs">
               <p className="tech text-muted-foreground">MEMÓRIA PERMANENTE</p>
-              <p className="tech text-foreground">SÃO PAULO // BR</p>
+              <p className="tech text-foreground font-bold mt-0.5">SÃO PAULO — BRASIL</p>
             </div>
           </Reveal>
         </div>

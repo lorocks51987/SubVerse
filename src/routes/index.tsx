@@ -1,515 +1,695 @@
+import { Logo } from "@/components/Logo";
+import { Ouroboros } from "@/components/Ouroboros";
+import DecryptedText from "@/components/reactbits/DecryptedText";
+import FoldText from "@/components/reactbits/FoldText";
+import { GlitchDecryptText } from "@/components/reactbits/GlitchDecryptText";
+import ScrollReveal from "@/components/reactbits/ScrollReveal";
+import TextType from "@/components/reactbits/TextType";
+import {
+    ClipReveal,
+    FadeIn,
+    ImageReveal,
+    LineReveal,
+    Reveal
+} from "@/components/site/Reveal";
+import { activeDrop, type DropPiece } from "@/data/drops";
+import { getWhatsAppAcquireUrl } from "@/lib/whatsapp";
+import { AsciiProgress } from "@/components/site/AsciiProgress";
+import { SizeGuideModal } from "@/components/site/SizeGuideModal";
 import { createFileRoute, Link } from "@tanstack/react-router";
 import {
-  motion,
-  useScroll,
-  useTransform,
-  useSpring,
-  useReducedMotion,
+    motion,
+    useInView,
+    useReducedMotion,
+    useScroll,
+    useSpring,
+    useTransform,
 } from "motion/react";
 import { useEffect, useRef, useState } from "react";
-import { Ouroboros } from "@/components/Ouroboros";
-import { Logo } from "@/components/Logo";
-import { Marquee } from "@/components/site/Marquee";
-import {
-  Reveal,
-  MaskReveal,
-  LateralReveal,
-  ClipReveal,
-  ImageReveal,
-  LineReveal,
-  FadeIn,
-} from "@/components/site/Reveal";
-import { activeDrop } from "@/data/drops";
-import heroEditorial from "@/assets/hero-editorial.jpg";
 
 export const Route = createFileRoute("/")({
-  head: () => ({
-    meta: [
-      { title: "SUBVERSE — Para os que não se encaixam" },
-      {
-        name: "description",
-        content:
-          "SubVerse é um universo underground brasileiro de streetwear. Não é sobre o que você veste, é sobre o que você se torna.",
-      },
-      { property: "og:title", content: "SUBVERSE — Para os que não se encaixam" },
-      {
-        property: "og:description",
-        content:
-          "Marca brasileira de streetwear underground. Ciclo, ruptura e transformação sob o símbolo do Ouroboros.",
-      },
-    ],
-  }),
-  component: Home,
+    head: () => ({
+        meta: [
+            { title: "SUBVERSE — Para os que não se encaixam" },
+            {
+                name: "description",
+                content:
+                    "SubVerse é um universo underground brasileiro de streetwear. Não é sobre o que você veste, é sobre o que você se torna.",
+            },
+            { property: "og:title", content: "SUBVERSE — Para os que não se encaixam" },
+            {
+                property: "og:description",
+                content:
+                    "Marca brasileira de streetwear underground. Ciclo, ruptura e transformação sob o símbolo do Ouroboros.",
+            },
+        ],
+    }),
+    component: Home,
 });
 
 function Home() {
-  const shouldReduceMotion = useReducedMotion();
-  const entryRef = useRef<HTMLElement>(null);
-  const { scrollYProgress } = useScroll({
-    target: entryRef,
-    offset: ["start start", "end start"],
-  });
+    const shouldReduceMotion = useReducedMotion();
+    const entryRef = useRef<HTMLElement>(null);
+    const [isSizeGuideOpen, setIsSizeGuideOpen] = useState(false);
+    const { scrollYProgress } = useScroll({
+        target: entryRef,
+        offset: ["start start", "end end"],
+    });
 
-  // ─── HERO SCROLL ──────────────────────────────────────────────────────────
-  // Fase 1 (0 → 0.55): cobra cresce suavemente, texto estável e visível
-  // Fase 2 (0.55 → 1.0): tudo some juntos conforme a seção sai do viewport
+    // ─── HERO SCROLL & MOTION (DURAÇÃO ESTENDIDA E SUAVE) ───────────────────────
+    // Fase 1 (0 → 0.65): Ouroboros escala e gira suavemente, texto 100% visível e legível
+    // Fase 2 (0.65 → 1.0): Dissolução gradual e elegante ao aproximar da próxima seção
+    const ringScale = useTransform(
+        scrollYProgress,
+        [0, 0.65, 1],
+        shouldReduceMotion ? [1, 1, 1] : [1, 1.25, 1.38]
+    );
+    const ringRotate = useTransform(
+        scrollYProgress,
+        [0, 1],
+        [0, shouldReduceMotion ? 0 : 60]
+    );
+    const ringOpacity = useTransform(
+        scrollYProgress,
+        [0, 0.65, 1],
+        [0.75, 0.55, 0]
+    );
 
-  const ringScale = useTransform(
-    scrollYProgress,
-    [0, 0.55, 1],
-    shouldReduceMotion ? [1, 1, 1] : [1, 1.25, 1.35]
-  );
-  const ringRotate = useTransform(
-    scrollYProgress,
-    [0, 1],
-    [0, shouldReduceMotion ? 0 : 55]
-  );
-  const ringOpacity = useTransform(
-    scrollYProgress,
-    [0, 0.55, 1],
-    [0.65, 0.45, 0]
-  );
+    const titleY = useTransform(
+        scrollYProgress,
+        [0, 0.65, 1],
+        shouldReduceMotion ? [0, 0, 0] : [0, 0, -28]
+    );
+    const titleOpacity = useTransform(
+        scrollYProgress,
+        [0, 0.6, 1],
+        [1, 1, 0]
+    );
 
-  // Texto: visível desde o início, sai suavemente no final
-  const titleY = useTransform(
-    scrollYProgress,
-    [0, 0.55, 1],
-    shouldReduceMotion ? [0, 0, 0] : [0, 0, -20]
-  );
-  const titleOpacity = useTransform(
-    scrollYProgress,
-    [0, 0.5, 1],
-    [1, 1, 0]
-  );
+    // Mouse tracking sutil para desktop
+    const [mousePos, setMousePos] = useState({ x: 0, y: 0 });
+    const [line1Done, setLine1Done] = useState(false);
+    const mouseSpringX = useSpring(mousePos.x, { stiffness: 35, damping: 28 });
+    const mouseSpringY = useSpring(mousePos.y, { stiffness: 35, damping: 28 });
 
+    useEffect(() => {
+        if (typeof window === "undefined" || shouldReduceMotion) return;
+        if (window.matchMedia("(pointer: coarse)").matches) return;
 
-  // Mouse tracking ultra-sutil — apenas desktop com ponteiro preciso
-  const [mousePos, setMousePos] = useState({ x: 0, y: 0 });
-  const mouseSpringX = useSpring(mousePos.x, { stiffness: 35, damping: 28 });
-  const mouseSpringY = useSpring(mousePos.y, { stiffness: 35, damping: 28 });
+        const handleMouseMove = (e: MouseEvent) => {
+            const { innerWidth, innerHeight } = window;
+            const x = (e.clientX / innerWidth - 0.5) * 12;
+            const y = (e.clientY / innerHeight - 0.5) * 12;
+            setMousePos({ x, y });
+        };
 
-  useEffect(() => {
-    if (typeof window === "undefined" || shouldReduceMotion) return;
-    if (window.matchMedia("(pointer: coarse)").matches) return;
+        window.addEventListener("mousemove", handleMouseMove, { passive: true });
+        return () => window.removeEventListener("mousemove", handleMouseMove);
+    }, [shouldReduceMotion]);
 
-    const handleMouseMove = (e: MouseEvent) => {
-      const { innerWidth, innerHeight } = window;
-      // Máximo de 10px — movimento lento, não segue o cursor agressivamente
-      const x = (e.clientX / innerWidth - 0.5) * 12;
-      const y = (e.clientY / innerHeight - 0.5) * 12;
-      setMousePos({ x, y });
+    // Axioma: revelação gradual via scroll
+    const axiomRef = useRef<HTMLDivElement>(null);
+    const isAxiomInView = useInView(axiomRef, { once: true, amount: 0.15 });
+    const { scrollYProgress: axiomProgress } = useScroll({
+        target: axiomRef,
+        offset: ["start 80%", "end 40%"],
+    });
+    const secondLineOpacity = useTransform(
+        axiomProgress,
+        [0, 0.3, 1],
+        [0.3, 0.6, 1]
+    );
+
+    // Peças do Drop 001
+    const pieces = activeDrop.pieces ?? [];
+    const heroPiece = pieces.find((p) => p.isHero) ?? pieces[0];
+    const secondaryPieces = pieces.filter((p) => p.id !== heroPiece?.id);
+
+    // Formatador de preço dinâmico
+    const renderPrice = (price?: string | number) => {
+        if (price === undefined || price === null || price === "") {
+            return "PREÇO A DEFINIR";
+        }
+        if (typeof price === "number") {
+            return `R$ ${price.toFixed(2).replace(".", ",")}`;
+        }
+        return price;
     };
 
-    window.addEventListener("mousemove", handleMouseMove, { passive: true });
-    return () => window.removeEventListener("mousemove", handleMouseMove);
-  }, [shouldReduceMotion]);
+    return (
+        <div className="concrete-surface">
+            {/* ────────────────────────────────────────────────────────────────────── */}
+            {/* 01 — HERO (TRACK DE SCROLL ESTENDIDO PARA ANIMAÇÃO MAIS LONGA)         */}
+            {/* ────────────────────────────────────────────────────────────────────── */}
+            <section
+                ref={entryRef}
+                className="relative h-[200vh]"
+            >
+                <div className="sticky top-0 flex h-[100svh] flex-col items-center justify-center overflow-hidden px-5">
+                    {/* OUROBOROS — Protagonista visual do Hero */}
+                    <motion.div
+                        style={{
+                            scale: ringScale,
+                            opacity: ringOpacity,
+                            rotate: ringRotate,
+                            x: shouldReduceMotion ? 0 : mouseSpringX,
+                            y: shouldReduceMotion ? 0 : mouseSpringY,
+                        }}
+                        className="pointer-events-none absolute top-1/2 left-1/2 h-[78vmin] w-[78vmin] -translate-x-1/2 -translate-y-1/2 will-change-transform"
+                    >
+                        <Ouroboros
+                            variant="intact"
+                            className="h-full w-full text-foreground"
+                            strokeWidth={0.75}
+                        />
+                    </motion.div>
 
-  // Axioma: opacity da segunda frase controlada por scroll
-  const axiomRef = useRef<HTMLDivElement>(null);
-  const { scrollYProgress: axiomProgress } = useScroll({
-    target: axiomRef,
-    offset: ["start 80%", "end 40%"],
-  });
-  const secondLineOpacity = useTransform(
-    axiomProgress,
-    [0, 0.3, 1],
-    [0.3, 0.6, 1]
-  );
+                    {/* TÍTULO & MANIFESTO CURTO — CLEAN & DIRETO */}
+                    <motion.div
+                        style={{
+                            y: titleY,
+                            opacity: titleOpacity,
+                        }}
+                        className="relative z-10 text-center flex flex-col items-center will-change-transform"
+                    >
+                        <motion.h1
+                            className="display-xl text-foreground select-none font-bold tracking-tight"
+                            initial={{ opacity: 0, y: 16 }}
+                            animate={{ opacity: 1, y: 0 }}
+                            transition={{ delay: 0.1, duration: 0.9, ease: [0.16, 1, 0.3, 1] }}
+                        >
+                            <GlitchDecryptText
+                                text="SUBVERSE"
+                                className="display-xl text-foreground select-none font-bold tracking-tight"
+                                speed={65}
+                                duration={2200}
+                                stagger={200}
+                                autoStart={true}
+                                triggerOnHover={false}
+                                loop={false}
+                            />
+                        </motion.h1>
+                        <motion.div
+                            initial={{ opacity: 0, y: 8 }}
+                            animate={{ opacity: 1, y: 0 }}
+                            transition={{ delay: 0.45, duration: 0.85, ease: [0.16, 1, 0.3, 1] }}
+                            className="mt-6 inline-flex items-center px-4 py-1.5 bg-neutral-950/85 backdrop-blur-md border border-border/60"
+                        >
+                            <p className="tech text-foreground tracking-[0.22em] uppercase text-xs sm:text-sm md:text-base font-bold font-mono">
+                                Para os que não se encaixam.
+                            </p>
+                        </motion.div>
+                    </motion.div>
 
-  return (
-    <div className="concrete-surface">
-      {/* 01 — HERO */}
-      <section
-        ref={entryRef}
-        className="relative flex h-[100svh] flex-col items-center justify-center overflow-hidden px-5"
-      >
-        {/* OUROBOROS — zoom-out na entrada, estabiliza, some no final */}
-        <motion.div
-          style={{
-            scale: ringScale,
-            opacity: ringOpacity,
-            rotate: ringRotate,
-            x: shouldReduceMotion ? 0 : mouseSpringX,
-            y: shouldReduceMotion ? 0 : mouseSpringY,
-          }}
-          className="pointer-events-none absolute top-1/2 left-1/2 h-[76vmin] w-[76vmin] -translate-x-1/2 -translate-y-1/2 will-change-transform"
-        >
-          <Ouroboros
-            variant="intact"
-            className="h-full w-full text-foreground"
-            strokeWidth={0.75}
-          />
-        </motion.div>
-
-        {/* TÍTULO — entra depois que o Ouroboros encolhe, sai junto no final */}
-        <motion.div
-          style={{
-            y: titleY,
-            opacity: titleOpacity,
-          }}
-          className="relative z-10 text-center flex flex-col items-center will-change-transform"
-        >
-          <motion.h1
-            className="display-xl text-foreground select-none font-bold tracking-tight"
-            initial={{ opacity: 0, y: 16 }}
-            animate={{ opacity: 1, y: 0 }}
-            transition={{ delay: 0.1, duration: 0.9, ease: [0.16, 1, 0.3, 1] }}
-          >
-            Subverse
-          </motion.h1>
-          <motion.div
-            initial={{ opacity: 0, y: 8 }}
-            animate={{ opacity: 1, y: 0 }}
-            transition={{ delay: 0.55, duration: 0.85, ease: [0.16, 1, 0.3, 1] }}
-            className="mt-6 flex items-center gap-3"
-          >
-            <span className="h-px w-6 sm:w-10 bg-border" />
-            <p className="tech text-foreground/90 tracking-[0.32em] sm:tracking-[0.42em] uppercase text-xs sm:text-sm font-bold font-mono">
-              Para os que não se encaixam.
-            </p>
-            <span className="h-px w-6 sm:w-10 bg-border" />
-          </motion.div>
-        </motion.div>
-
-        {/* SCROLL TO ENTER */}
-        <motion.div
-          initial={{ opacity: 0 }}
-          animate={{ opacity: 1 }}
-          transition={{ delay: 1.2, duration: 0.9 }}
-          className="absolute bottom-8 sm:bottom-10 left-1/2 -translate-x-1/2 flex flex-col items-center gap-2 pointer-events-none pb-[env(safe-area-inset-bottom)]"
-        >
-          <div className="h-5 w-px bg-gradient-to-b from-foreground/50 to-transparent animate-pulse" />
-        </motion.div>
-      </section>
-
-      {/* MARQUEE PRINCIPAL */}
-      <Marquee text="QUESTIONAR — ROMPER — TRANSFORMAR — EVOLUIR — RECOMEÇAR" />
-
-      {/* 02 — MANIFESTO: TENSÃO E RUPTURA */}
-      <section className="relative px-5 py-20 md:px-8 md:py-32">
-        <div className="mx-auto max-w-[1600px] space-y-20 md:space-y-28">
-
-          {/* IMPOSIÇÃO — frase 1: revelação por máscara, linha por linha */}
-          <div className="max-w-4xl">
-            <FadeIn delay={0}>
-              <span className="tech text-muted-foreground text-xs block mb-4 font-mono">
-                // 001 — O MOLDE
-              </span>
-            </FadeIn>
-            <LineReveal delay={0.1} className="mb-6 w-16" />
-            <p className="display-lg text-foreground font-display text-4xl sm:text-6xl md:text-8xl lg:text-[7rem] leading-[0.88]">
-              <MaskReveal delay={0.18}>
-                <span>Você foi ensinado</span>
-              </MaskReveal>
-              <MaskReveal delay={0.32}>
-                <span>a caber.</span>
-              </MaskReveal>
-            </p>
-          </div>
-
-          {/* RUPTURA — frase 2: entrada lateral — representa saída do padrão */}
-          <div className="flex justify-end">
-            <div className="max-w-4xl text-right">
-              <FadeIn delay={0}>
-                <span className="tech text-muted-foreground text-xs block mb-4 font-mono">
-                  // 002 — A RUPTURA
-                </span>
-              </FadeIn>
-              <LineReveal delay={0.1} fromRight className="mb-6 w-16 ml-auto" />
-              <p className="display-lg text-foreground font-display text-4xl sm:text-6xl md:text-8xl lg:text-[7rem] leading-[0.88]">
-                <LateralReveal x={40} delay={0.18}>
-                  <span className="block">Mas nem todo mundo</span>
-                </LateralReveal>
-                {/* Linha 2 entra com pequeno desfasamento — irregularidade intencional */}
-                <LateralReveal x={28} delay={0.32}>
-                  <span className="block">foi feito para caber.</span>
-                </LateralReveal>
-              </p>
-            </div>
-          </div>
-
-          {/* OS QUATRO PRINCÍPIOS — stagger sequencial com LineReveal */}
-          <div>
-            <LineReveal delay={0} className="mb-0" />
-            <div className="grid gap-4 md:grid-cols-4">
-              {[
-                ["01", "QUESTIONAR.", "A recusa da primeira certeza imposta."],
-                ["02", "ROMPER.", "A forma precisa rachar para você existir."],
-                ["03", "TRANSFORMAR.", "O que sobra da ruptura vira matéria."],
-                ["04", "EVOLUIR.", "O ciclo não tem última volta."],
-              ].map(([num, w, desc], i) => (
-                <Reveal key={w} delay={i * 0.12} y={14}>
-                  <div className="group border-t border-border pt-4 bg-card/20 p-6 min-h-[180px] flex flex-col justify-between transition-all duration-300 hover:border-foreground/60 hover:-translate-y-0.5">
-                    <div>
-                      <span className="tech text-muted-foreground text-[0.65rem] font-mono group-hover:text-foreground/70 transition-colors duration-300">
-                        {num}
-                      </span>
-                      <p
-                        className="font-display text-3xl uppercase md:text-4xl text-foreground mt-2 transition-transform duration-300 group-hover:translate-x-0.5"
-                        style={{ transform: `rotate(${i % 2 === 0 ? -0.4 : 0.4}deg)` }}
-                      >
-                        {w}
-                      </p>
-                    </div>
-                    <p className="tech text-muted-foreground text-[0.65rem] mt-6 leading-relaxed group-hover:text-muted-foreground/80 transition-colors duration-300">
-                      {desc}
-                    </p>
-                  </div>
-                </Reveal>
-              ))}
-            </div>
-          </div>
-
-          {/* AXIOMA CENTRAL — impacto máximo da seção */}
-          <div
-            ref={axiomRef}
-            className="border border-border p-6 sm:p-8 md:p-14 bg-card/20 flex flex-col md:flex-row items-center gap-8 md:gap-12 hover:border-foreground/50 transition-colors duration-500"
-          >
-            {/* Ouroboros aparece primeiro via FadeIn */}
-            <FadeIn delay={0} className="h-20 w-20 md:h-28 md:w-28 shrink-0">
-              <Ouroboros variant="intact" className="h-full w-full" />
-            </FadeIn>
-            <div className="space-y-4 flex-1">
-              <div className="flex items-center gap-3">
-                <span className="tech text-muted-foreground text-[0.65rem]">AXIOMA CENTRAL</span>
-                <div className="h-px flex-1 bg-border/60" />
-                <span className="tech text-muted-foreground text-[0.65rem]">SUBVERSE // BR</span>
-              </div>
-              <h2 className="display-lg text-foreground font-display text-3xl sm:text-5xl md:text-6xl leading-[0.95]">
-                {/* Linha 1 — revelação por máscara */}
-                <MaskReveal delay={0.15}>
-                  <span>Não é sobre o que você veste.</span>
-                </MaskReveal>
-                {/* Linha 2 — começa apagada, ganha intensidade com scroll */}
-                <motion.span
-                  className="block mt-2"
-                  style={{ opacity: shouldReduceMotion ? 1 : secondLineOpacity }}
-                >
-                  <MaskReveal delay={0.3}>
-                    <span className="text-muted-foreground">
-                      É sobre o que você se torna.
-                    </span>
-                  </MaskReveal>
-                </motion.span>
-              </h2>
-              <div className="pt-3 flex flex-wrap items-center justify-between gap-4">
-                <Link
-                  to="/manifesto"
-                  className="tech link-underline inline-block text-xs font-bold text-foreground transition-transform duration-300 hover:translate-x-1"
-                >
-                  LER O MANIFESTO COMPLETO →
-                </Link>
-                <span className="tech text-[0.6rem] text-muted-foreground font-mono">
-                  001 // POSTULADO
-                </span>
-              </div>
-            </div>
-          </div>
-        </div>
-      </section>
-
-      {/* 03 — THE SUBVERSE: RESPIRAÇÃO APÓS O AXIOMA */}
-      <section className="border-y border-border px-5 py-20 md:px-8 md:py-32">
-        <div className="mx-auto max-w-[1600px]">
-          <div className="grid gap-14 md:grid-cols-12 items-start">
-            <div className="md:col-span-5 space-y-6">
-              <ClipReveal>
-                <span className="tech text-muted-foreground text-xs">ARQUIVO // 002</span>
-                <h2 className="display-lg text-foreground mt-2">The Subverse</h2>
-                <p className="text-muted-foreground leading-relaxed text-sm md:text-base mt-4">
-                  A SubVerse nasce daqueles que não encontram pertencimento nos padrões
-                  estabelecidos. Não porque desejam simplesmente ser diferentes, mas porque entendem
-                  que padrões podem ser questionados.
-                </p>
-                <div className="pt-4">
-                  <Link
-                    to="/universe"
-                    className="tech link-underline inline-block text-xs font-bold transition-transform duration-300 hover:translate-x-1"
-                  >
-                    EXPLORAR OS 3 PILARES DA MARCA →
-                  </Link>
+                    {/* INDICADOR DE SCROLL */}
+                    <motion.div
+                        initial={{ opacity: 0 }}
+                        animate={{ opacity: 1 }}
+                        transition={{ delay: 1.2, duration: 0.9 }}
+                        className="absolute bottom-8 sm:bottom-10 left-1/2 -translate-x-1/2 flex flex-col items-center gap-2 pointer-events-none pb-[env(safe-area-inset-bottom)]"
+                    >
+                        <div className="h-5 w-px bg-gradient-to-b from-foreground/60 to-transparent animate-pulse" />
+                    </motion.div>
                 </div>
-              </ClipReveal>
-            </div>
+            </section>
 
-            <div className="md:col-span-7 space-y-4">
-              {[
-                [
-                  "SUBVERSO",
-                  "O LUGAR",
-                  "O lugar daqueles que não se encaixam. Território de pertencimento para quem questiona padrões consolidados e recusa o conforto do consenso.",
-                ],
-                [
-                  "SUBVERSÃO",
-                  "O ATO",
-                  "A necessidade ativa de questionar, romper e transformar. A atitude que racha a casca e transforma matéria bruta em evolução.",
-                ],
-                [
-                  "OUROBOROS",
-                  "O CICLO",
-                  "O ciclo permanente de destruição e reconstrução. A serpente devorando a cauda como assinatura de que nunca existirá uma versão final estática.",
-                ],
-              ].map(([title, role, desc], idx) => (
-                <Reveal key={title} delay={idx * 0.1} y={14}>
-                  <div className="group border border-border p-6 bg-card/20 transition-all duration-300 hover:border-foreground/60 hover:-translate-y-px">
-                    <div className="flex items-center justify-between">
-                      <div className="flex items-baseline gap-3">
-                        <h3 className="font-display text-2xl uppercase tracking-wide text-foreground transition-transform duration-300 group-hover:translate-x-0.5">
-                          {title}
-                        </h3>
-                        <span className="tech text-muted-foreground text-[0.65rem]">// {role}</span>
-                      </div>
-                      <span className="tech text-muted-foreground text-[0.6rem] transition-colors duration-300 group-hover:text-foreground/60">
-                        PILAR // 0{idx + 1}
-                      </span>
+            {/* ────────────────────────────────────────────────────────────────────── */}
+            {/* 02 — BLOCO DE IDENTIFICAÇÃO (MOLDE, RUPTURA & AXIOMA)                  */}
+            {/* ────────────────────────────────────────────────────────────────────── */}
+            <section className="relative px-5 py-28 md:px-8 md:py-44">
+                <div className="mx-auto max-w-[1600px] space-y-36 md:space-y-56">
+                    {/* Frase 01: O Molde */}
+                    <div className="max-w-4xl pb-16 sm:pb-28 md:pb-44 lg:pb-52">
+                        <LineReveal delay={0.1} className="mb-6 w-16" />
+                        <p className="display-lg text-foreground font-display text-4xl sm:text-6xl md:text-8xl lg:text-[7rem] leading-[0.88]">
+                            <TextType
+                                text="Você foi ensinado a caber."
+                                typingSpeed={40}
+                                startOnVisible={true}
+                                resetOnLeave={true}
+                                loop={false}
+                                showCursor={true}
+                                cursorCharacter="_"
+                                cursorClassName="text-foreground/70 font-light"
+                                className="inline"
+                            />
+                        </p>
                     </div>
-                    <p className="text-muted-foreground text-xs leading-relaxed mt-3 transition-colors duration-300 group-hover:text-muted-foreground/90">
-                      {desc}
-                    </p>
-                  </div>
-                </Reveal>
-              ))}
-            </div>
-          </div>
-        </div>
-      </section>
 
-      {/* 04 — VOCÊ RECONHECE OS SEUS: CONVERGÊNCIA EDITORIAL */}
-      <section className="px-5 py-20 md:px-8 md:py-32">
-        <div className="mx-auto max-w-[1600px]">
-          <div className="grid gap-12 md:grid-cols-12 items-center">
-            {/* ESQUERDA — texto entra primeiro */}
-            <div className="md:col-span-6 space-y-6">
-              <ClipReveal>
-                <div className="flex items-center gap-3">
-                  <span className="tech text-muted-foreground text-xs">
-                    CÓDIGO DE RECONHECIMENTO
-                  </span>
-                  <div className="h-px w-12 bg-border" />
-                  <span className="tech text-muted-foreground text-xs">003</span>
+                    {/* Frase 02: A Ruptura — ScrollReveal com Respiro Estendido */}
+                    <div className="flex justify-end pt-8 md:pt-16">
+                        <div className="max-w-4xl text-right">
+                            <LineReveal delay={0.1} fromRight className="mb-6 w-16 ml-auto" />
+                            <ScrollReveal
+                                baseOpacity={0.06}
+                                baseRotation={1.5}
+                                blurStrength={4}
+                                enableBlur={true}
+                                containerClassName="text-right"
+                                textClassName="display-lg text-foreground font-display text-4xl sm:text-6xl md:text-8xl lg:text-[7rem] leading-[0.88]"
+                            >
+                                Mas nem todo mundo foi feito para caber.
+                            </ScrollReveal>
+                        </div>
+                    </div>
+
+                    {/* BLOCO INDISPENSÁVEL: AXIOMA CENTRAL (LIMPO & EDITORIAL) */}
+                    <div
+                        ref={axiomRef}
+                        className="py-12 md:py-20 flex flex-col md:flex-row items-center gap-8 md:gap-16 border-t border-border/40"
+                    >
+                        <FadeIn delay={0} className="h-20 w-20 md:h-28 md:w-28 shrink-0">
+                            <Ouroboros variant="intact" className="h-full w-full text-foreground/80" />
+                        </FadeIn>
+                        <div className="space-y-5 flex-1">
+                            <h2 className="display-lg font-display text-3xl sm:text-5xl md:text-6xl leading-[0.98]">
+                                <DecryptedText
+                                    text="Não é sobre o que você veste."
+                                    animateOn="controlled"
+                                    isTriggered={isAxiomInView}
+                                    revealDirection="start"
+                                    sequential
+                                    speed={50}
+                                    maxIterations={12}
+                                    characters="ABCDEFGHIJKLMNOPQRSTUVWXYZ0123456789"
+                                    className="text-foreground"
+                                    encryptedClassName="text-muted-foreground/60"
+                                    parentClassName="block w-full"
+                                    onComplete={() => setLine1Done(true)}
+                                />
+                                <span className="block mt-2">
+                                    <DecryptedText
+                                        text="É sobre o que você se torna."
+                                        animateOn="controlled"
+                                        isTriggered={isAxiomInView}
+                                        delay={350}
+                                        revealDirection="start"
+                                        sequential
+                                        speed={50}
+                                        maxIterations={12}
+                                        characters="ABCDEFGHIJKLMNOPQRSTUVWXYZ0123456789"
+                                        className="text-muted-foreground"
+                                        encryptedClassName="text-muted-foreground/40"
+                                        parentClassName="block w-full"
+                                    />
+                                </span>
+                            </h2>
+                            <div className="pt-2">
+                                <Link
+                                    to="/manifesto"
+                                    className="tech link-underline inline-block text-xs font-bold text-foreground transition-transform duration-300 hover:translate-x-1"
+                                >
+                                    LER O MANIFESTO COMPLETO →
+                                </Link>
+                            </div>
+                        </div>
+                    </div>
                 </div>
-                <h2 className="display-lg text-foreground mt-3">Você reconhece os seus.</h2>
-                <p className="text-muted-foreground text-sm md:text-base leading-relaxed max-w-[48ch] mt-4">
-                  Pessoas que compartilham a mesma inquietação reconhecem umas às outras. O símbolo
-                  na etiqueta, a textura do algodão pesado e a recusa do padrão são a nossa
-                  linguagem comum.
-                </p>
-              </ClipReveal>
-            </div>
+            </section>
 
-            {/* DIREITA — símbolos entram convergindo (de lados opostos), após o texto */}
-            <div className="md:col-span-6 flex items-center justify-center">
-              <div className="w-full max-w-lg overflow-hidden">
-                <motion.div
-                  className="flex items-center justify-center gap-8 sm:gap-12 p-8 sm:p-14 border border-border bg-card/20"
-                  initial={shouldReduceMotion ? { opacity: 0 } : { opacity: 0 }}
-                  whileInView={{ opacity: 1 }}
-                  viewport={{ once: true, margin: "-8% 0px" }}
-                  transition={{ duration: 0.8, delay: 0.2, ease: [0.16, 1, 0.3, 1] }}
-                >
-                  {/* Logo: entra da esquerda */}
-                  <motion.div
-                    initial={shouldReduceMotion ? {} : { x: -24, opacity: 0 }}
-                    whileInView={shouldReduceMotion ? {} : { x: 0, opacity: 1 }}
-                    viewport={{ once: true, margin: "-8% 0px" }}
-                    transition={{ duration: 0.9, delay: 0.35, ease: [0.16, 1, 0.3, 1] }}
-                  >
-                    <Logo className="h-20 w-20 sm:h-28 sm:w-28 md:h-32 md:w-32 shrink-0 transition-transform duration-700 hover:scale-105" />
-                  </motion.div>
-                  <div className="h-16 sm:h-20 w-px bg-border shrink-0" />
-                  {/* Ouroboros: entra da direita */}
-                  <motion.div
-                    initial={shouldReduceMotion ? {} : { x: 24, opacity: 0 }}
-                    whileInView={shouldReduceMotion ? {} : { x: 0, opacity: 1 }}
-                    viewport={{ once: true, margin: "-8% 0px" }}
-                    transition={{ duration: 0.9, delay: 0.45, ease: [0.16, 1, 0.3, 1] }}
-                  >
-                    <Ouroboros className="spin-slower h-20 w-20 sm:h-28 sm:w-28 md:h-32 md:w-32 shrink-0 text-foreground/90" />
-                  </motion.div>
-                </motion.div>
-              </div>
-            </div>
-          </div>
+            {/* ────────────────────────────────────────────────────────────────────── */}
+            {/* 03 & 04 — DROP 001 — MOLDADOS & PRODUTO PROTAGONISTA                   */}
+            {/* ────────────────────────────────────────────────────────────────────── */}
+            <section className="border-t border-border/40 px-5 py-24 md:px-8 md:py-36">
+                <div className="mx-auto max-w-[1600px]">
+                    {/* CABEÇALHO DO DROP */}
+                    <div className="border-b border-border/40 pb-8">
+                        <span className="tech text-muted-foreground text-xs font-mono block">
+                            CAPÍTULO I — MOLDADOS
+                        </span>
+                        <h2 className="display-xl mt-2 text-foreground">
+                            <FoldText
+                                text="Moldados"
+                                splitBy="char"
+                                hinge="top"
+                                trigger="scroll"
+                                duration={0.7}
+                                stagger={0.045}
+                                perspective={800}
+                                creaseShading={0.5}
+                                className="display-xl text-foreground"
+                            />
+                        </h2>
+                        <p className="font-display text-lg sm:text-xl md:text-2xl text-muted-foreground mt-2">
+                            "Subversivos não nascem prontos. São moldados."
+                        </p>
+                    </div>
+
+                    {/* ── PEÇA PRINCIPAL (HERO PRODUCT: FOTO DOMINANTE & FOCO TOTAL) ──────── */}
+                    {heroPiece && (
+                        <div className="mt-14 md:mt-20">
+                            <div className="grid gap-10 lg:grid-cols-12 lg:items-center">
+                                {/* 1. FOTO DA PEÇA */}
+                                <div className="lg:col-span-7">
+                                    <ImageReveal delay={0.08} className="group relative bg-neutral-950 overflow-hidden">
+                                        <img
+                                            src={heroPiece.image}
+                                            alt={heroPiece.name}
+                                            width={1408}
+                                            height={1760}
+                                            loading="eager"
+                                            fetchPriority="high"
+                                            className="h-[58svh] sm:h-[70svh] lg:h-[82svh] w-full object-cover object-center grayscale contrast-110 transition-transform duration-[1200ms] group-hover:scale-[1.02]"
+                                        />
+                                        <div className="absolute top-4 left-4">
+                                            <span className="tech bg-background/90 px-3 py-1 text-xs text-foreground font-mono font-bold">
+                                                {heroPiece.code}
+                                            </span>
+                                        </div>
+                                    </ImageReveal>
+                                </div>
+
+                                {/* 2 a 6. HIERARQUIA COMERCIAL LIMPA & OBJETIVA */}
+                                <div className="lg:col-span-5 space-y-6 lg:pl-6">
+                                    <div>
+                                        <h3 className="display-lg text-foreground text-3xl sm:text-4xl md:text-5xl">
+                                            {heroPiece.name}
+                                        </h3>
+                                    </div>
+
+                                    <div className="border-t border-border/40 pt-4">
+                                        <p className="font-display text-3xl sm:text-4xl text-foreground font-bold">
+                                            {renderPrice(heroPiece.price)}
+                                        </p>
+                                    </div>
+
+                                    <div className="border-t border-border/40 pt-4 flex items-center justify-between">
+                                        <span className="tech text-foreground font-mono text-sm font-bold block">
+                                            {heroPiece.editionUnits ?? "50 UNIDADES"}
+                                        </span>
+                                        <button
+                                            type="button"
+                                            onClick={() => setIsSizeGuideOpen(true)}
+                                            className="tech text-foreground hover:underline text-xs font-mono font-bold cursor-pointer"
+                                        >
+                                            TABELA DE MEDIDAS →
+                                        </button>
+                                    </div>
+
+                                    <div className="border-t border-border/40 pt-4">
+                                        <p className="tech text-muted-foreground text-xs font-mono">
+                                            {heroPiece.specs}
+                                        </p>
+                                    </div>
+
+                                    <div className="pt-4">
+                                        <a
+                                            href={getWhatsAppAcquireUrl({
+                                                pieceName: heroPiece.name,
+                                                pieceCode: heroPiece.code,
+                                                dropName: "DROP 001 — MOLDADOS",
+                                            })}
+                                            target="_blank"
+                                            rel="noopener noreferrer"
+                                            className="group flex items-center justify-between bg-foreground px-6 py-4 text-background font-bold transition-all hover:bg-background hover:text-foreground border border-foreground w-full min-h-[52px]"
+                                        >
+                                            <span className="tech text-xs tracking-wider">ADQUIRIR VIA WHATSAPP</span>
+                                            <span className="tech text-xs">→</span>
+                                        </a>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    )}
+
+                    {/* ── PEÇAS SECUNDÁRIAS (GRID LIMPO SEM CAIXAS) ───────────────────────── */}
+                    {secondaryPieces.length > 0 && (
+                        <div className="mt-24 md:mt-32 border-t border-border/40 pt-16">
+                            <div className="mb-10">
+                                <span className="tech text-muted-foreground text-xs font-mono block">
+                                    COMPLEMENTO DO DROP
+                                </span>
+                                <h4 className="font-display text-2xl sm:text-3xl uppercase text-foreground mt-1">
+                                    Peças Secundárias
+                                </h4>
+                            </div>
+
+                            <div className="grid gap-10 md:grid-cols-2">
+                                {secondaryPieces.map((piece: DropPiece, idx: number) => (
+                                    <Reveal key={piece.id} delay={idx * 0.12}>
+                                        <div className="flex flex-col justify-between h-full group">
+                                            <div>
+                                                {/* Imagem */}
+                                                <div className="relative overflow-hidden aspect-[4/5] bg-neutral-950">
+                                                    <img
+                                                        src={piece.image}
+                                                        alt={piece.name}
+                                                        loading="lazy"
+                                                        decoding="async"
+                                                        className="h-full w-full object-cover grayscale contrast-110 transition-transform duration-700 group-hover:scale-105"
+                                                    />
+                                                    <div className="absolute top-3 left-3">
+                                                        <span className="tech bg-background/90 px-2.5 py-1 text-[0.65rem] text-foreground font-mono">
+                                                            {piece.code}
+                                                        </span>
+                                                    </div>
+                                                </div>
+
+                                                {/* Info */}
+                                                <div className="mt-6 space-y-2">
+                                                    <div className="flex items-baseline justify-between">
+                                                        <h5 className="font-display text-2xl text-foreground uppercase">
+                                                            {piece.name}
+                                                        </h5>
+                                                        <span className="font-display text-lg text-foreground font-bold">
+                                                            {renderPrice(piece.price)}
+                                                        </span>
+                                                    </div>
+                                                    <p className="tech text-foreground font-mono text-xs font-bold pt-1">
+                                                        {piece.editionUnits ?? "50 UNIDADES"}
+                                                    </p>
+                                                    <p className="tech text-muted-foreground text-xs font-mono pt-1">
+                                                        {piece.specs}
+                                                    </p>
+                                                </div>
+                                            </div>
+
+                                            {/* CTA */}
+                                            <div className="mt-6 pt-4 border-t border-border/40">
+                                                <a
+                                                    href={getWhatsAppAcquireUrl({
+                                                        pieceName: piece.name,
+                                                        pieceCode: piece.code,
+                                                        dropName: "DROP 001 — MOLDADOS",
+                                                    })}
+                                                    target="_blank"
+                                                    rel="noopener noreferrer"
+                                                    className="tech border border-border text-foreground hover:border-foreground hover:bg-foreground hover:text-background py-3 px-4 text-xs font-bold flex items-center justify-between transition-all"
+                                                >
+                                                    <span>ADQUIRIR VIA WHATSAPP</span>
+                                                    <span>→</span>
+                                                </a>
+                                            </div>
+                                        </div>
+                                    </Reveal>
+                                ))}
+                            </div>
+                        </div>
+                    )}
+                </div>
+            </section>
+
+            {/* ────────────────────────────────────────────────────────────────────── */}
+            {/* 05 — ESCASSEZ (LIMPO & SEM MOLDURAS PESADAS)                           */}
+            {/* ────────────────────────────────────────────────────────────────────── */}
+            <section className="border-t border-border/40 px-5 py-24 md:px-8 md:py-36 bg-neutral-950">
+                <div className="mx-auto max-w-[1600px]">
+                    <div className="grid gap-12 lg:grid-cols-12 items-center">
+                        <div className="lg:col-span-7 space-y-5">
+                            <span className="tech text-muted-foreground text-xs font-mono block">
+                                REGRA DO CICLO
+                            </span>
+                            <h3 className="display-lg text-foreground text-3xl sm:text-5xl md:text-6xl leading-[0.92]">
+                                <TextType
+                                    text="Edição estrita. Feita para quem não espera uma segunda chance."
+                                    typingSpeed={38}
+                                    startOnVisible={true}
+                                    resetOnLeave={true}
+                                    loop={false}
+                                    showCursor={true}
+                                    cursorCharacter="_"
+                                    cursorClassName="text-foreground/70 font-light"
+                                    className="inline"
+                                />
+                            </h3>
+                            <p className="text-muted-foreground text-sm md:text-base leading-relaxed max-w-[54ch]">
+                                50 unidades por peça. Não haverá reposição. Quando terminar, este capítulo será arquivado.
+                            </p>
+                        </div>
+
+                        <div className="lg:col-span-5">
+                            <AsciiProgress totalUnits={50} remainingUnits={38} totalBlocks={24} />
+                        </div>
+                    </div>
+                </div>
+            </section>
+
+            {/* ────────────────────────────────────────────────────────────────────── */}
+            {/* 06 — FILOSOFIA → PRODUTO                                               */}
+            {/* ────────────────────────────────────────────────────────────────────── */}
+            <section className="border-t border-border/40 px-5 py-20 md:px-8 md:py-28">
+                <div className="mx-auto max-w-[1600px]">
+                    <div className="grid gap-8 md:grid-cols-12 items-center">
+                        <div className="md:col-span-8 space-y-3">
+                            <span className="tech text-muted-foreground text-xs font-mono block">
+                                MATÉRIA & PROPÓSITO
+                            </span>
+                            <h3 className="display-lg text-foreground text-3xl sm:text-5xl leading-[0.95]">
+                                <FoldText
+                                    text="Essa filosofia virou uma peça."
+                                    splitBy="word"
+                                    hinge="top"
+                                    trigger="scroll"
+                                    duration={0.65}
+                                    stagger={0.06}
+                                    perspective={800}
+                                    creaseShading={0.4}
+                                    className="display-lg text-foreground"
+                                />
+                            </h3>
+                            <p className="text-muted-foreground text-sm sm:text-base leading-relaxed max-w-[56ch]">
+                                A roupa é a materialização daquilo que a SubVerse acredita. Matéria pesada e modelagem
+                                estruturada feitas para carregar a identidade de quem recusa o molde.
+                            </p>
+                        </div>
+
+                        <div className="md:col-span-4 md:text-right">
+                            <Link
+                                to="/drops/$slug"
+                                params={{ slug: "001" }}
+                                className="tech link-underline inline-block text-xs font-bold tracking-wider hover:text-foreground transition-colors"
+                            >
+                                VER DETALHES DO CAPÍTULO I →
+                            </Link>
+                        </div>
+                    </div>
+                </div>
+            </section>
+
+            {/* ────────────────────────────────────────────────────────────────────── */}
+            {/* 07 — "VOCÊ RECONHECE OS SEUS"                                          */}
+            {/* ────────────────────────────────────────────────────────────────────── */}
+            <section className="border-t border-border/40 px-5 py-24 md:px-8 md:py-36">
+                <div className="mx-auto max-w-[1600px]">
+                    <div className="grid gap-12 md:grid-cols-12 items-center">
+                        {/* Texto de reconhecimento */}
+                        <div className="md:col-span-6 space-y-5">
+                            <ClipReveal>
+                                <span className="tech text-muted-foreground text-xs font-mono block">
+                                    CÓDIGO DE RECONHECIMENTO
+                                </span>
+                                <h2 className="display-lg text-foreground text-4xl sm:text-6xl md:text-7xl mt-2">
+                                    Você reconhece os seus.
+                                </h2>
+                                <p className="text-muted-foreground text-sm md:text-base leading-relaxed max-w-[48ch] mt-4">
+                                    Pessoas que compartilham a mesma inquietação reconhecem umas às outras. O símbolo
+                                    na etiqueta, a textura da matéria pesada e a recusa do padrão são a nossa linguagem comum.
+                                </p>
+                            </ClipReveal>
+                        </div>
+
+                        {/* Quadro Visual: LOGO SUBVERSE | OUROBOROS */}
+                        <div className="md:col-span-6 flex items-center justify-center">
+                            <div className="flex items-center justify-center gap-8 sm:gap-14 p-6 sm:p-10">
+                                <motion.div
+                                    initial={shouldReduceMotion ? {} : { x: -20, opacity: 0 }}
+                                    whileInView={shouldReduceMotion ? {} : { x: 0, opacity: 1 }}
+                                    viewport={{ once: true, margin: "-8% 0px" }}
+                                    transition={{ duration: 0.9, delay: 0.2, ease: [0.16, 1, 0.3, 1] }}
+                                >
+                                    <Logo className="h-16 w-16 sm:h-24 sm:w-24 md:h-28 md:w-28 shrink-0 transition-transform duration-700 hover:scale-105" />
+                                </motion.div>
+                                <div className="h-16 sm:h-20 w-px bg-border/40 shrink-0" />
+                                <motion.div
+                                    initial={shouldReduceMotion ? {} : { x: 20, opacity: 0 }}
+                                    whileInView={shouldReduceMotion ? {} : { x: 0, opacity: 1 }}
+                                    viewport={{ once: true, margin: "-8% 0px" }}
+                                    transition={{ duration: 0.9, delay: 0.3, ease: [0.16, 1, 0.3, 1] }}
+                                >
+                                    <Ouroboros className="spin-slower h-16 w-16 sm:h-24 sm:w-24 md:h-28 md:w-28 shrink-0 text-foreground/85" />
+                                </motion.div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </section>
+
+            {/* ────────────────────────────────────────────────────────────────────── */}
+            {/* 08 — UNIVERSO (PORTAL DE APROFUNDAMENTO EDITORIAL)                     */}
+            {/* ────────────────────────────────────────────────────────────────────── */}
+            <section className="border-t border-border/40 px-5 py-20 md:px-8 md:py-28 bg-neutral-950">
+                <div className="mx-auto max-w-[1600px]">
+                    <div className="flex flex-col md:flex-row md:items-end justify-between gap-8 pb-10 border-b border-border/40">
+                        <div>
+                            <span className="tech text-muted-foreground text-xs font-mono block">
+                                ARQUIVO & MANIFESTO
+                            </span>
+                            <h3 className="display-lg text-foreground text-3xl sm:text-5xl mt-2">
+                                Quer entender o universo?
+                            </h3>
+                        </div>
+                        <Link
+                            to="/universe"
+                            className="tech link-underline text-xs font-bold tracking-wider text-foreground"
+                        >
+                            EXPLORAR O SUBVERSE COMPLETO →
+                        </Link>
+                    </div>
+
+                    <div className="grid gap-10 md:grid-cols-3 mt-12">
+                        <Link
+                            to="/universe"
+                            className="group flex flex-col justify-between min-h-[140px] transition-transform duration-300 hover:translate-x-1"
+                        >
+                            <div>
+                                <span className="tech text-muted-foreground text-[0.65rem] font-mono block">01 — PILARES</span>
+                                <h4 className="font-display text-2xl uppercase text-foreground mt-2">
+                                    O Universo
+                                </h4>
+                                <p className="text-muted-foreground text-xs leading-relaxed mt-2">
+                                    Subverso, Subversão e Ouroboros. A trindade conceitual da marca.
+                                </p>
+                            </div>
+                            <span className="tech text-xs font-bold text-foreground mt-4 block">ACESSAR →</span>
+                        </Link>
+
+                        <Link
+                            to="/manifesto"
+                            className="group flex flex-col justify-between min-h-[140px] transition-transform duration-300 hover:translate-x-1"
+                        >
+                            <div>
+                                <span className="tech text-muted-foreground text-[0.65rem] font-mono block">02 — POSTULADO</span>
+                                <h4 className="font-display text-2xl uppercase text-foreground mt-2">
+                                    O Manifesto
+                                </h4>
+                                <p className="text-muted-foreground text-xs leading-relaxed mt-2">
+                                    "Não é sobre o que você veste. É sobre o que você se torna." O documento.
+                                </p>
+                            </div>
+                            <span className="tech text-xs font-bold text-foreground mt-4 block">LER TEXTO →</span>
+                        </Link>
+
+                        <Link
+                            to="/archive"
+                            className="group flex flex-col justify-between min-h-[140px] transition-transform duration-300 hover:translate-x-1"
+                        >
+                            <div>
+                                <span className="tech text-muted-foreground text-[0.65rem] font-mono block">03 — REGISTROS</span>
+                                <h4 className="font-display text-2xl uppercase text-foreground mt-2">
+                                    O Arquivo
+                                </h4>
+                                <p className="text-muted-foreground text-xs leading-relaxed mt-2">
+                                    Capítulos encerrados, peças históricas e tiragens extintas.
+                                </p>
+                            </div>
+                            <span className="tech text-xs font-bold text-foreground mt-4 block">CONSULTAR →</span>
+                        </Link>
+                    </div>
+                </div>
+            </section>
+
+            {/* Modal de Tabela de Medidas */}
+            <SizeGuideModal isOpen={isSizeGuideOpen} onClose={() => setIsSizeGuideOpen(false)} />
         </div>
-      </section>
-
-      {/* 05 — CAPÍTULO I: DROP 001 — MOLDADOS */}
-      <section className="border-t border-border px-5 py-20 md:px-8 md:py-32">
-        <div className="mx-auto max-w-[1600px]">
-          <div className="flex flex-wrap items-end justify-between gap-6">
-            <div>
-              <ClipReveal>
-                <span className="tech text-muted-foreground text-xs">CAPÍTULO I // MOLDADOS</span>
-                <h2 className="display-xl mt-4 text-foreground">Moldados</h2>
-                <p className="font-display mt-2 text-2xl md:text-3xl text-foreground">
-                  "Subversivos não nascem prontos. São moldados."
-                </p>
-              </ClipReveal>
-            </div>
-            <Reveal y={10} delay={0.1}>
-              <div className="space-y-1 text-right font-mono text-xs">
-                <p className="tech text-muted-foreground">ARTEFATO // 007</p>
-                <p className="tech text-muted-foreground">TIRAGEM // 038 / 050</p>
-                <p className="tech text-foreground font-bold">STATUS // ACTIVE</p>
-              </div>
-            </Reveal>
-          </div>
-
-          {/* Imagem editorial — revelação lenta, 1100ms */}
-          <ImageReveal delay={0.08} className="mt-12 border border-border group relative">
-            <img
-              src={heroEditorial}
-              alt="Editorial do Drop 001 — MOLDADOS"
-              width={1408}
-              height={1760}
-              className="h-[65svh] w-full object-cover object-center grayscale contrast-110 md:h-[86svh] transition-transform duration-[1200ms] group-hover:scale-[1.015]"
-            />
-            <div className="absolute inset-0 bg-gradient-to-t from-background via-transparent to-transparent" />
-            {/* Ouroboros no canto — aparece por último */}
-            <FadeIn delay={0.35} className="absolute right-6 bottom-6">
-              <Ouroboros
-                variant="forming"
-                className="h-16 w-16 text-foreground/90 mix-blend-difference md:h-24 md:w-24"
-              />
-            </FadeIn>
-          </ImageReveal>
-
-          <div className="mt-12 grid gap-8 md:grid-cols-12 items-center justify-between">
-            <div className="md:col-span-7 space-y-3">
-              <Reveal y={10}>
-                <p className="tech text-muted-foreground text-[0.68rem]">
-                  HISTÓRIA DO CAPÍTULO // CONCRETO & MADRUGADA
-                </p>
-                <p className="text-muted-foreground text-sm leading-relaxed max-w-[56ch]">
-                  {activeDrop.concept} Registrado em concreto e marquise. Malha pesada 240g com
-                  serigrafia rachada na cura para registrar o processo de ruptura.
-                </p>
-              </Reveal>
-            </div>
-
-            <div className="md:col-span-5 md:text-right">
-              <Reveal y={10} delay={0.1}>
-                <Link
-                  to="/drops/$slug"
-                  params={{ slug: activeDrop.slug }}
-                  className="group inline-flex items-center gap-6 border border-foreground bg-foreground px-8 py-5 text-background font-bold transition-all hover:bg-background hover:text-foreground w-full justify-between sm:w-auto"
-                >
-                  <span className="tech">ENTRAR NO CAPÍTULO I</span>
-                  <Ouroboros
-                    variant="forming"
-                    className="h-5 w-5 transition-transform duration-700 group-hover:rotate-180"
-                  />
-                </Link>
-              </Reveal>
-            </div>
-          </div>
-        </div>
-      </section>
-
-      <Marquee
-        text="DROP 001 — MOLDADOS — SUBVERSIVOS NÃO NASCEM PRONTOS. SÃO MOLDADOS."
-        items={4}
-      />
-    </div>
-  );
+    );
 }

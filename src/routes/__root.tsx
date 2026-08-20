@@ -8,8 +8,8 @@ import {
   HeadContent,
   Scripts,
 } from "@tanstack/react-router";
-import { motion, AnimatePresence } from "motion/react";
-import type { ReactNode } from "react";
+import { motion } from "motion/react";
+import { useEffect, type ReactNode } from "react";
 
 import appCss from "../styles.css?url";
 import { Nav } from "../components/site/Nav";
@@ -86,10 +86,18 @@ export const Route = createRootRouteWithContext<{ queryClient: QueryClient }>()(
       { property: "og:title", content: "SUBVERSE — Para os que não se encaixam" },
       {
         property: "og:description",
-        content: "Marca brasileira de streetwear underground. Ciclo, ruptura e transformação.",
+        content: "Marca brasileira de streetwear underground. Ciclo, ruptura e transformação sob o símbolo do Ouroboros.",
       },
       { property: "og:type", content: "website" },
+      { property: "og:site_name", content: "SUBVERSE" },
+      { property: "og:image", content: "/ouroboros-official.png" },
       { name: "twitter:card", content: "summary_large_image" },
+      { name: "twitter:title", content: "SUBVERSE — Para os que não se encaixam" },
+      {
+        name: "twitter:description",
+        content: "Marca brasileira de streetwear underground. Não é sobre o que você veste, é sobre o que você se torna.",
+      },
+      { name: "twitter:image", content: "/ouroboros-official.png" },
     ],
     links: [
       { rel: "preconnect", href: "https://fonts.googleapis.com" },
@@ -114,11 +122,11 @@ export const Route = createRootRouteWithContext<{ queryClient: QueryClient }>()(
 
 function RootShell({ children }: { children: ReactNode }) {
   return (
-    <html lang="pt-BR">
+    <html lang="pt-BR" suppressHydrationWarning>
       <head>
         <HeadContent />
       </head>
-      <body>
+      <body suppressHydrationWarning>
         <div className="grain" aria-hidden="true" />
         {children}
         <Scripts />
@@ -127,23 +135,33 @@ function RootShell({ children }: { children: ReactNode }) {
   );
 }
 
+function ScrollToTop() {
+  const routerState = useRouterState();
+  const currentPath = routerState.location.pathname;
+
+  useEffect(() => {
+    if (typeof window !== "undefined") {
+      window.scrollTo(0, 0);
+    }
+  }, [currentPath]);
+
+  return null;
+}
+
 function PageTransitionWrapper({ children }: { children: ReactNode }) {
   const routerState = useRouterState();
   const currentPath = routerState.location.pathname;
 
   return (
-    <AnimatePresence mode="wait" initial={false}>
-      <motion.div
-        key={currentPath}
-        initial={{ opacity: 0, y: 8 }}
-        animate={{ opacity: 1, y: 0 }}
-        exit={{ opacity: 0, y: -6 }}
-        transition={{ duration: 0.38, ease: [0.16, 1, 0.3, 1] }}
-        className="w-full flex-1"
-      >
-        {children}
-      </motion.div>
-    </AnimatePresence>
+    <motion.div
+      key={currentPath}
+      initial={{ opacity: 0 }}
+      animate={{ opacity: 1 }}
+      transition={{ duration: 0.2, ease: [0.16, 1, 0.3, 1] }}
+      className="w-full flex-1"
+    >
+      {children}
+    </motion.div>
   );
 }
 
@@ -152,6 +170,7 @@ function RootComponent() {
 
   return (
     <QueryClientProvider client={queryClient}>
+      <ScrollToTop />
       <div className="relative min-h-screen flex flex-col justify-between bg-background text-foreground selection:bg-foreground selection:text-background">
         <Nav />
         <main className="flex-1 flex flex-col">
