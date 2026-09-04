@@ -2,6 +2,11 @@ import heroEditorial from "@/assets/hero-editorial.jpg";
 import artifactFront from "@/assets/artifact-front.jpg";
 import artifactDetail from "@/assets/artifact-detail.jpg";
 
+export type PieceImage = {
+  src: string;
+  label: string;
+};
+
 export type DropPiece = {
   id: string;
   code: string;
@@ -11,14 +16,18 @@ export type DropPiece = {
   isConcept?: boolean;
   fabric: string;
   fit: string;
+  weight?: string;
   specs: string;
-  price?: number | string; // Suporta number (ex: 249.90) ou string. Quando indefinido, renderiza "PREÇO A DEFINIR"
+  price?: number | string; // Opcional. Se ausente, renderiza "PREÇO A DEFINIR"
   edition: string;
   editionUnits?: string;
   editionSize?: number;
+  stock?: number;
   remaining?: number;
+  status?: "ACTIVE" | "LOW_STOCK" | "SOLD_OUT" | "COMING_SOON";
   sizes: string[];
-  image: string;
+  image: string; // Imagem principal
+  images?: PieceImage[]; // Imagens complementares (macro, detalhes de costura, verso)
   detailsImage?: string;
   description: string;
 };
@@ -45,7 +54,7 @@ export type Drop = {
     price: string;
     sizes: string[];
   };
-  images: { src: string; label: string }[];
+  images: PieceImage[];
   cover: string;
 };
 
@@ -71,7 +80,7 @@ export const drops: Drop[] = [
       "Serigrafia com rachadura proposital na cura",
     ],
     editionConcept: "EDIÇÃO LIMITADA // PRODUÇÃO RESTRITA",
-    edition: { made: 50, remaining: 12 },
+    edition: { made: 0, remaining: 0 },
     pieces: [
       {
         id: "moldados-001",
@@ -82,11 +91,18 @@ export const drops: Drop[] = [
         isConcept: true,
         fabric: "100% ALGODÃO 240G",
         fit: "OVERSIZED BOXY",
+        weight: "240g / m²",
         specs: "100% ALGODÃO 240G · BOXY OVERSIZED",
         edition: "EDIÇÃO LIMITADA",
-        editionUnits: "50 UNIDADES",
+        editionUnits: "SEM REPOSIÇÃO",
+        status: "ACTIVE",
         sizes: ["P", "M", "G", "GG"],
         image: heroEditorial,
+        images: [
+          { src: heroEditorial, label: "EDITORIAL / 01" },
+          { src: artifactFront, label: "FRENTE / 02" },
+          { src: artifactDetail, label: "DETALHE / 03" },
+        ],
         detailsImage: artifactFront,
         description:
           "Modelagem boxy estruturada com estampa em serigrafia de cura aberta sob o símbolo do Ouroboros em formação.",
@@ -100,11 +116,17 @@ export const drops: Drop[] = [
         isConcept: true,
         fabric: "FRENCH TERRY 420G",
         fit: "BOXY STRUCTURED",
+        weight: "420g / m²",
         specs: "FRENCH TERRY 420G · BOXY STRUCTURED",
         edition: "EDIÇÃO LIMITADA",
-        editionUnits: "50 UNIDADES",
+        editionUnits: "SEM REPOSIÇÃO",
+        status: "ACTIVE",
         sizes: ["P", "M", "G", "GG"],
         image: artifactDetail,
+        images: [
+          { src: artifactDetail, label: "DETALHE MACRO" },
+          { src: heroEditorial, label: "LOOKBOOK" },
+        ],
         description:
           "Gramatura extrema com acabamento canelado denso e bordado tonal sutil do Ouroboros.",
       },
@@ -117,11 +139,17 @@ export const drops: Drop[] = [
         isConcept: true,
         fabric: "SARJA PESADA 320G",
         fit: "WIDE LEG RELAXED",
+        weight: "320g / m²",
         specs: "SARJA PESADA 320G · WIDE LEG",
         edition: "EDIÇÃO LIMITADA",
-        editionUnits: "50 UNIDADES",
+        editionUnits: "SEM REPOSIÇÃO",
+        status: "ACTIVE",
         sizes: ["38", "40", "42", "44"],
         image: artifactFront,
+        images: [
+          { src: artifactFront, label: "FRENTE / VISTA" },
+          { src: artifactDetail, label: "DETALHE COSTURA" },
+        ],
         description:
           "Construção utilitária com costuras reforçadas em linha contrastante e corte amplo.",
       },
@@ -131,7 +159,7 @@ export const drops: Drop[] = [
       name: "MOLDADOS TEE",
       fabric: "100% ALGODÃO 240G / LAVAGEM ENZIMÁTICA",
       fit: "OVERSIZED / OMBRO CAÍDO / CORPO BOXY",
-      price: "R$ 349",
+      price: "PREÇO A DEFINIR",
       sizes: ["P", "M", "G", "GG"],
     },
     images: [

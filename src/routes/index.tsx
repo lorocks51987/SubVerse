@@ -8,14 +8,12 @@ import TextType from "@/components/reactbits/TextType";
 import {
     ClipReveal,
     FadeIn,
-    ImageReveal,
-    LineReveal,
-    Reveal
+    LineReveal
 } from "@/components/site/Reveal";
-import { activeDrop, type DropPiece } from "@/data/drops";
-import { getWhatsAppAcquireUrl } from "@/lib/whatsapp";
+import { activeDrop } from "@/data/drops";
 import { AsciiProgress } from "@/components/site/AsciiProgress";
 import { SizeGuideModal } from "@/components/site/SizeGuideModal";
+import { ProductDropShowcase } from "@/components/site/ProductDropShowcase";
 import { createFileRoute, Link } from "@tanstack/react-router";
 import {
     motion,
@@ -26,6 +24,7 @@ import {
     useTransform,
 } from "motion/react";
 import { useEffect, useRef, useState } from "react";
+
 
 export const Route = createFileRoute("/")({
     head: () => ({
@@ -114,27 +113,9 @@ function Home() {
         target: axiomRef,
         offset: ["start 80%", "end 40%"],
     });
-    const secondLineOpacity = useTransform(
-        axiomProgress,
-        [0, 0.3, 1],
-        [0.3, 0.6, 1]
-    );
-
     // Peças do Drop 001
     const pieces = activeDrop.pieces ?? [];
-    const heroPiece = pieces.find((p) => p.isHero) ?? pieces[0];
-    const secondaryPieces = pieces.filter((p) => p.id !== heroPiece?.id);
 
-    // Formatador de preço dinâmico
-    const renderPrice = (price?: string | number) => {
-        if (price === undefined || price === null || price === "") {
-            return "PREÇO A DEFINIR";
-        }
-        if (typeof price === "number") {
-            return `R$ ${price.toFixed(2).replace(".", ",")}`;
-        }
-        return price;
-    };
 
     return (
         <div className="concrete-surface">
@@ -308,186 +289,56 @@ function Home() {
             </section>
 
             {/* ────────────────────────────────────────────────────────────────────── */}
-            {/* 03 & 04 — DROP 001 — MOLDADOS & PRODUTO PROTAGONISTA                   */}
+            {/* 03 & 04 — DROP 001 — MOLDADOS & VITRINE PROTAGONISTA DE PRODUTOS       */}
             {/* ────────────────────────────────────────────────────────────────────── */}
             <section className="border-t border-border/40 px-5 py-24 md:px-8 md:py-36">
                 <div className="mx-auto max-w-[1600px]">
                     {/* CABEÇALHO DO DROP */}
-                    <div className="border-b border-border/40 pb-8">
-                        <span className="tech text-muted-foreground text-xs font-mono block">
-                            CAPÍTULO I — MOLDADOS
-                        </span>
-                        <h2 className="display-xl mt-2 text-foreground">
-                            <FoldText
-                                text="Moldados"
-                                splitBy="char"
-                                hinge="top"
-                                trigger="scroll"
-                                duration={0.7}
-                                stagger={0.045}
-                                perspective={800}
-                                creaseShading={0.5}
-                                className="display-xl text-foreground"
-                            />
-                        </h2>
-                        <p className="font-display text-lg sm:text-xl md:text-2xl text-muted-foreground mt-2">
-                            "Subversivos não nascem prontos. São moldados."
-                        </p>
+                    <div className="flex flex-col sm:flex-row sm:items-end justify-between gap-4 border-b border-border/40 pb-8">
+                        <div>
+                            <span className="tech text-muted-foreground text-xs font-mono block">
+                                CAPÍTULO I — MOLDADOS
+                            </span>
+                            <h2 className="display-xl mt-2 text-foreground">
+                                <FoldText
+                                    text="Moldados"
+                                    splitBy="char"
+                                    hinge="top"
+                                    trigger="scroll"
+                                    duration={0.7}
+                                    stagger={0.045}
+                                    perspective={800}
+                                    creaseShading={0.5}
+                                    className="display-xl text-foreground"
+                                />
+                            </h2>
+                            <p className="font-display text-lg sm:text-xl md:text-2xl text-muted-foreground mt-2">
+                                "Subversivos não nascem prontos. São moldados."
+                            </p>
+                        </div>
+
+                        <div className="flex items-center gap-4 text-xs font-mono">
+                            <Link
+                                to="/drops/$slug"
+                                params={{ slug: "001" }}
+                                className="tech link-underline text-foreground font-bold hover:text-muted-foreground transition-colors"
+                            >
+                                VER NARRATIVA DO DROP →
+                            </Link>
+                        </div>
                     </div>
 
-                    {/* ── PEÇA PRINCIPAL (HERO PRODUCT: FOTO DOMINANTE & FOCO TOTAL) ──────── */}
-                    {heroPiece && (
-                        <div className="mt-14 md:mt-20">
-                            <div className="grid gap-10 lg:grid-cols-12 lg:items-center">
-                                {/* 1. FOTO DA PEÇA */}
-                                <div className="lg:col-span-7">
-                                    <ImageReveal delay={0.08} className="group relative bg-neutral-950 overflow-hidden">
-                                        <img
-                                            src={heroPiece.image}
-                                            alt={heroPiece.name}
-                                            width={1408}
-                                            height={1760}
-                                            loading="eager"
-                                            fetchPriority="high"
-                                            className="h-[58svh] sm:h-[70svh] lg:h-[82svh] w-full object-cover object-center grayscale contrast-110 transition-transform duration-[1200ms] group-hover:scale-[1.02]"
-                                        />
-                                        <div className="absolute top-4 left-4">
-                                            <span className="tech bg-background/90 px-3 py-1 text-xs text-foreground font-mono font-bold">
-                                                {heroPiece.code}
-                                            </span>
-                                        </div>
-                                    </ImageReveal>
-                                </div>
-
-                                {/* 2 a 6. HIERARQUIA COMERCIAL LIMPA & OBJETIVA */}
-                                <div className="lg:col-span-5 space-y-6 lg:pl-6">
-                                    <div>
-                                        <h3 className="display-lg text-foreground text-3xl sm:text-4xl md:text-5xl">
-                                            {heroPiece.name}
-                                        </h3>
-                                    </div>
-
-                                    <div className="border-t border-border/40 pt-4">
-                                        <p className="font-display text-3xl sm:text-4xl text-foreground font-bold">
-                                            {renderPrice(heroPiece.price)}
-                                        </p>
-                                    </div>
-
-                                    <div className="border-t border-border/40 pt-4 flex items-center justify-between">
-                                        <span className="tech text-foreground font-mono text-sm font-bold block">
-                                            {heroPiece.editionUnits ?? "50 UNIDADES"}
-                                        </span>
-                                        <button
-                                            type="button"
-                                            onClick={() => setIsSizeGuideOpen(true)}
-                                            className="tech text-foreground hover:underline text-xs font-mono font-bold cursor-pointer"
-                                        >
-                                            TABELA DE MEDIDAS →
-                                        </button>
-                                    </div>
-
-                                    <div className="border-t border-border/40 pt-4">
-                                        <p className="tech text-muted-foreground text-xs font-mono">
-                                            {heroPiece.specs}
-                                        </p>
-                                    </div>
-
-                                    <div className="pt-4">
-                                        <a
-                                            href={getWhatsAppAcquireUrl({
-                                                pieceName: heroPiece.name,
-                                                pieceCode: heroPiece.code,
-                                                dropName: "DROP 001 — MOLDADOS",
-                                            })}
-                                            target="_blank"
-                                            rel="noopener noreferrer"
-                                            className="group flex items-center justify-between bg-foreground px-6 py-4 text-background font-bold transition-all hover:bg-background hover:text-foreground border border-foreground w-full min-h-[52px]"
-                                        >
-                                            <span className="tech text-xs tracking-wider">ADQUIRIR VIA WHATSAPP</span>
-                                            <span className="tech text-xs">→</span>
-                                        </a>
-                                    </div>
-                                </div>
-                            </div>
-                        </div>
-                    )}
-
-                    {/* ── PEÇAS SECUNDÁRIAS (GRID LIMPO SEM CAIXAS) ───────────────────────── */}
-                    {secondaryPieces.length > 0 && (
-                        <div className="mt-24 md:mt-32 border-t border-border/40 pt-16">
-                            <div className="mb-10">
-                                <span className="tech text-muted-foreground text-xs font-mono block">
-                                    COMPLEMENTO DO DROP
-                                </span>
-                                <h4 className="font-display text-2xl sm:text-3xl uppercase text-foreground mt-1">
-                                    Peças Secundárias
-                                </h4>
-                            </div>
-
-                            <div className="grid gap-10 md:grid-cols-2">
-                                {secondaryPieces.map((piece: DropPiece, idx: number) => (
-                                    <Reveal key={piece.id} delay={idx * 0.12}>
-                                        <div className="flex flex-col justify-between h-full group">
-                                            <div>
-                                                {/* Imagem */}
-                                                <div className="relative overflow-hidden aspect-[4/5] bg-neutral-950">
-                                                    <img
-                                                        src={piece.image}
-                                                        alt={piece.name}
-                                                        loading="lazy"
-                                                        decoding="async"
-                                                        className="h-full w-full object-cover grayscale contrast-110 transition-transform duration-700 group-hover:scale-105"
-                                                    />
-                                                    <div className="absolute top-3 left-3">
-                                                        <span className="tech bg-background/90 px-2.5 py-1 text-[0.65rem] text-foreground font-mono">
-                                                            {piece.code}
-                                                        </span>
-                                                    </div>
-                                                </div>
-
-                                                {/* Info */}
-                                                <div className="mt-6 space-y-2">
-                                                    <div className="flex items-baseline justify-between">
-                                                        <h5 className="font-display text-2xl text-foreground uppercase">
-                                                            {piece.name}
-                                                        </h5>
-                                                        <span className="font-display text-lg text-foreground font-bold">
-                                                            {renderPrice(piece.price)}
-                                                        </span>
-                                                    </div>
-                                                    <p className="tech text-foreground font-mono text-xs font-bold pt-1">
-                                                        {piece.editionUnits ?? "50 UNIDADES"}
-                                                    </p>
-                                                    <p className="tech text-muted-foreground text-xs font-mono pt-1">
-                                                        {piece.specs}
-                                                    </p>
-                                                </div>
-                                            </div>
-
-                                            {/* CTA */}
-                                            <div className="mt-6 pt-4 border-t border-border/40">
-                                                <a
-                                                    href={getWhatsAppAcquireUrl({
-                                                        pieceName: piece.name,
-                                                        pieceCode: piece.code,
-                                                        dropName: "DROP 001 — MOLDADOS",
-                                                    })}
-                                                    target="_blank"
-                                                    rel="noopener noreferrer"
-                                                    className="tech border border-border text-foreground hover:border-foreground hover:bg-foreground hover:text-background py-3 px-4 text-xs font-bold flex items-center justify-between transition-all"
-                                                >
-                                                    <span>ADQUIRIR VIA WHATSAPP</span>
-                                                    <span>→</span>
-                                                </a>
-                                            </div>
-                                        </div>
-                                    </Reveal>
-                                ))}
-                            </div>
-                        </div>
-                    )}
+                    {/* ── CARROSSEL & VITRINE DE PRODUTOS (FOCO TOTAL NA PEÇA) ─────────────── */}
+                    <div className="mt-10 md:mt-14">
+                        <ProductDropShowcase
+                            pieces={pieces}
+                            onOpenSizeGuide={() => setIsSizeGuideOpen(true)}
+                            dropName="DROP 001 — MOLDADOS"
+                        />
+                    </div>
                 </div>
             </section>
+
 
             {/* ────────────────────────────────────────────────────────────────────── */}
             {/* 05 — ESCASSEZ (LIMPO & SEM MOLDURAS PESADAS)                           */}
@@ -513,13 +364,14 @@ function Home() {
                                 />
                             </h3>
                             <p className="text-muted-foreground text-sm md:text-base leading-relaxed max-w-[54ch]">
-                                50 unidades por peça. Não haverá reposição. Quando terminar, este capítulo será arquivado.
+                                Tiragem estritamente limitada por peça. Sem reposição. Quando a tiragem for encerrada, este capítulo será arquivado definitivamente.
                             </p>
                         </div>
 
                         <div className="lg:col-span-5">
-                            <AsciiProgress totalUnits={50} remainingUnits={38} totalBlocks={24} />
+                            <AsciiProgress />
                         </div>
+
                     </div>
                 </div>
             </section>

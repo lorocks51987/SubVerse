@@ -54,8 +54,10 @@ function ProductsPage() {
         pieceCode: selectedProduct.sku,
         dropName: "CATÁLOGO SUBVERSE",
         size: selectedSize ?? undefined,
+        price: selectedProduct.price,
       })
     : "#";
+
 
   return (
     <div className="concrete-surface pt-28">
